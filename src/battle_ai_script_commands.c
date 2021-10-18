@@ -509,7 +509,8 @@ static u8 ChooseMoveOrAction_Singles(void)
 
     gActiveBattler = sBattler_AI;
     // If can switch.
-    if (CountUsablePartyMons(sBattler_AI) >= 1
+    if (!(AI_THINKING_STRUCT->aiFlags & (AI_SCRIPT_DO_NOT_SWITCH | AI_SCRIPT_PRESERVE_ORDER))
+        && CountUsablePartyMons(sBattler_AI) >= 1
         && !IsAbilityPreventingEscape(sBattler_AI)
         && !(gBattleMons[gActiveBattler].status2 & (STATUS2_WRAPPED | STATUS2_ESCAPE_PREVENTION))
         && !(gStatuses3[gActiveBattler] & STATUS3_ROOTED)
