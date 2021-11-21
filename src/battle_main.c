@@ -1867,9 +1867,28 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
                     nameHash += gSpeciesNames[partyData[i].species][j];
 
-                personalityValue += nameHash << 8;
+                do
+                {
+                  personalityValue = Random32();
+                } while(partyData[i].nature != GetNatureFromPersonality(personalityValue));
+                //personalityValue += nameHash << 8; Old way that nature is determined
+
                 fixedIV = partyData[i].iv * 31 / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                CreateMon(&party[i],
+                          partyData[i].species,
+                          partyData[i].lvl,
+                          fixedIV,
+                          TRUE,
+                          personalityValue,
+                          OT_ID_RANDOM_NO_SHINY, 0);
+
+                SetMonData(&party[i], MON_DATA_ABILITY_NUM, &partyData[i].ability);
+
+                for (j = 0; j < NUM_STATS; j++)
+                {
+                  SetMonData(&party[i], MON_DATA_HP_EV + j, &partyData[i].evs[j]);
+                }
+                CalculateMonStats(&party[i]);
 
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
@@ -1899,11 +1918,24 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
                     nameHash += gSpeciesNames[partyData[i].species][j];
 
-                personalityValue += nameHash << 8;
+                do
+                {
+                  personalityValue = Random32();
+                } while(partyData[i].nature != GetNatureFromPersonality(personalityValue));
+
+                //personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * 31 / 255;
                 CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
 
+                SetMonData(&party[i], MON_DATA_ABILITY_NUM, &partyData[i].ability);
+
                 SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
+
+                for (j = 0; j < NUM_STATS; j++)
+                {
+                  SetMonData(&party[i], MON_DATA_HP_EV + j, &partyData[i].evs[j]);
+                }
+                CalculateMonStats(&party[i]);
 
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
