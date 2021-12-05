@@ -3706,6 +3706,21 @@ const struct MonCoords gMonFrontPicCoords[] =
         .size = 0x45,
         .y_offset = 2,
     },
+    [SPECIES_ORICORIO_POM_POM] =
+    {
+        .size = 0x45,
+        .y_offset = 2,
+    },
+    [SPECIES_ORICORIO_PAU] =
+    {
+        .size = 0x45,
+        .y_offset = 2,
+    },
+    [SPECIES_ORICORIO_SENSU] =
+    {
+        .size = 0x45,
+        .y_offset = 2,
+    },
     [SPECIES_CUTIEFLY] =
     {
         .size = 0x45,
@@ -4045,6 +4060,26 @@ const struct MonCoords gMonFrontPicCoords[] =
     {
         .size = 0x86,
         .y_offset = 4,
+    },
+    [SPECIES_CLOBBOPUS] =
+    {
+        .size = 0x74,
+        .y_offset = 13,
+    },
+    [SPECIES_GRAPPLOCT] =
+    {
+        .size = 0x45,
+        .y_offset = 4,
+    },
+    [SPECIES_REGIELEKI] =
+    {
+        .size = 0x88,
+        .y_offset = 5,
+    },
+    [SPECIES_REGIDRAGO] =
+    {
+        .size = 0x88,
+        .y_offset = 5,
     },
     [SPECIES_EGG] =
     {

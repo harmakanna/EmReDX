@@ -9719,4 +9719,52 @@ const struct PokedexEntry gPokedexEntries[] =
 		.trainerScale = 387,
 		.trainerOffset = 2,
 	},
+
+  [NATIONAL_DEX_CLOBBOPUS] =
+  {
+    .categoryName = _("Tantrum"),
+    .height = 6,
+    .weight = 40,
+    .description = gClobbopusPokedexText,
+    .pokemonScale = 444,
+    .pokemonOffset = 18,
+    .trainerScale = 256,
+    .trainerOffset = 0,
+  },
+
+  [NATIONAL_DEX_GRAPPLOCT] =
+  {
+    .categoryName = _("Jujitsu"),
+    .height = 16,
+    .weight = 390,
+    .description = gGrapploctPokedexText,
+    .pokemonScale = 256,
+    .pokemonOffset = -1,
+    .trainerScale = 293,
+    .trainerOffset = 2,
+  },
+
+  [NATIONAL_DEX_REGIELEKI] =
+  {
+    .categoryName = _("Electron"),
+    .height = 12,
+    .weight = 1450,
+    .description = gRegielekiPokedexText,
+    .pokemonScale = 256,
+    .pokemonOffset = 4,
+    .trainerScale = 256,
+    .trainerOffset = 0,
+  },
+
+  [NATIONAL_DEX_REGIDRAGO] =
+  {
+    .categoryName = _("Dragon Orb"),
+    .height = 21,
+    .weight = 2000,
+    .description = gRegidragoPokedexText,
+    .pokemonScale = 256,
+    .pokemonOffset = -1,
+    .trainerScale = 350,
+    .trainerOffset = 6,
+  },
 };

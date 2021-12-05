@@ -4857,3 +4857,26 @@ const u8 gMelmetalPokedexText[] = _(
     "Revered long ago for its capacity to create\n"
     "iron from nothing, for some reason it has\n"
     "come back to life after 3,000 years.");
+
+const u8 gClobbopusPokedexText[] = _(
+    "It's very curious, but its means of\n"
+    "investigating things is to punch them with\n"
+    "its tentacles. The search for food is\n"
+    "what brings it onto land.");
+
+const u8 gGrapploctPokedexText[] = _(
+    "A body made up of nothing but muscle\n"
+    "makes the grappling moves this Pokémon\n"
+    "performs with its tentacles tremendously\n"
+    "powerful.");
+
+const u8 gRegielekiPokedexText[] = _(
+    "This Pokémon is a cluster of electrical\n"
+    "energy. It's said that removing the rings\n"
+    "on Regieleki's body will unleash the\n"
+    "Pokémon's latent power.");
+
+const u8 gRegidragoPokedexText[] = _(
+    "Its body is comprised of crystallized dragon\n"
+    "energy. Regidrago is said to have the powers\n"
+    "of every dragon Pokémon.");

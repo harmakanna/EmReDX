@@ -3705,6 +3705,21 @@ const struct MonCoords gMonBackPicCoords[] =
         .size = 0x88,
         .y_offset = 0,
     },
+    [SPECIES_ORICORIO_POM_POM] =
+    {
+        .size = 0x88,
+        .y_offset = 0,
+    },
+    [SPECIES_ORICORIO_PAU] =
+    {
+        .size = 0x88,
+        .y_offset = 0,
+    },
+    [SPECIES_ORICORIO_SENSU] =
+    {
+        .size = 0x88,
+        .y_offset = 0,
+    },
     [SPECIES_CUTIEFLY] =
     {
         .size = 0x76,
@@ -4044,6 +4059,26 @@ const struct MonCoords gMonBackPicCoords[] =
     {
         .size = 0x85,
         .y_offset = 13,
+    },
+    [SPECIES_CLOBBOPUS] =
+    {
+        .size = 0x64,
+        .y_offset = 18,
+    },
+    [SPECIES_GRAPPLOCT] =
+    {
+        .size = 0x87,
+        .y_offset = 10,
+    },
+    [SPECIES_REGIELEKI] =
+    {
+        .size = 0x86,
+        .y_offset = 11,
+    },
+    [SPECIES_REGIDRAGO] =
+    {
+        .size = 0x86,
+        .y_offset = 11,
     },
     // Eggs + Unown
     [SPECIES_EGG] =

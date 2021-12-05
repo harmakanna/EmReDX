@@ -751,7 +751,10 @@ const struct CompressedSpriteSheet gMonBackPicTable[] =
     SPECIES_SPRITE(VIKAVOLT, gMonBackPic_Vikavolt),
     SPECIES_SPRITE(CRABRAWLER, gMonBackPic_Crabrawler),
     SPECIES_SPRITE(CRABOMINABLE, gMonBackPic_Crabominable),
-    SPECIES_SPRITE(ORICORIO, gMonBackPic_Oricorio),
+    SPECIES_SPRITE(ORICORIO, gMonBackPic_OricorioBaile),
+    SPECIES_SPRITE(ORICORIO_POM_POM, gMonBackPic_OricorioPomPom),
+    SPECIES_SPRITE(ORICORIO_PAU, gMonBackPic_OricorioPau),
+    SPECIES_SPRITE(ORICORIO_SENSU, gMonBackPic_OricorioSensu),
     SPECIES_SPRITE(CUTIEFLY, gMonBackPic_Cutiefly),
     SPECIES_SPRITE(RIBOMBEE, gMonBackPic_Ribombee),
     SPECIES_SPRITE(ROCKRUFF, gMonBackPic_Rockruff),
@@ -820,6 +823,10 @@ const struct CompressedSpriteSheet gMonBackPicTable[] =
     SPECIES_SPRITE(ZERAORA, gMonBackPic_Zeraora),
     SPECIES_SPRITE(MELTAN, gMonBackPic_Meltan),
     SPECIES_SPRITE(MELMETAL, gMonBackPic_Melmetal),
+    SPECIES_SPRITE(CLOBBOPUS, gMonBackPic_Clobbopus),
+    SPECIES_SPRITE(GRAPPLOCT, gMonBackPic_Grapploct),
+    SPECIES_SPRITE(REGIELEKI, gMonBackPic_Regieleki),
+    SPECIES_SPRITE(REGIDRAGO, gMonBackPic_Regidrago),
     SPECIES_SPRITE(EGG, gMonFrontPic_Egg),
 
     SPECIES_SPRITE(MEGA_VENUSAUR, gMonBackPic_MegaVenusaur),
@@ -891,7 +898,7 @@ const struct CompressedSpriteSheet gMonBackPicTable[] =
     SPECIES_SPRITE(ALOLAN_MUK, gMonBackPic_AlolanMuk),
     SPECIES_SPRITE(ALOLAN_EXEGGUTOR, gMonBackPic_AlolanExeggutor),
     SPECIES_SPRITE(ALOLAN_MAROWAK, gMonBackPic_AlolanMarowak),
-    
+
     SPECIES_SPRITE(SHAYMIN_SKY, gMonBackPic_ShayminSky),
     SPECIES_SPRITE(GIRATINA_ORIGIN, gMonBackPic_GiratinaOrigin),
     SPECIES_SPRITE(DARMANITAN_ZEN, gMonBackPic_DarmanitanZen),

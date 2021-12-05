@@ -4034,6 +4034,14 @@ const u16 gEggMoves[] = {
 		MOVE_REVERSAL,
 		MOVE_DRAGON_BREATH),
 
+	egg_moves(CLOBBOPUS,
+		MOVE_CIRCLE_THROW,
+		MOVE_PAIN_SPLIT, //Only available through Pyukumuku, which is not in this hack
+		MOVE_POWER_UP_PUNCH,
+	  MOVE_SEISMIC_TOSS,
+	  MOVE_SOAK,
+		MOVE_SUCKER_PUNCH),
+
 	egg_moves(ALOLAN_RATTATA,
 		MOVE_COUNTER,
 		MOVE_FINAL_GAMBIT,

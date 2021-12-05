@@ -9010,6 +9010,27 @@ static const u32 sTutorLearnsets[] =
 											| TUTOR(MOVE_SWAGGER)
 											| TUTOR(MOVE_SWORDS_DANCE)),
 
+    [SPECIES_ORICORIO_POM_POM]= TUTOR_LEARNSET(TUTOR(MOVE_ICY_WIND)
+											| TUTOR(MOVE_SLEEP_TALK)
+											| TUTOR(MOVE_SNORE)
+											| TUTOR(MOVE_SUBSTITUTE)
+											| TUTOR(MOVE_SWAGGER)
+											| TUTOR(MOVE_SWORDS_DANCE)),
+
+    [SPECIES_ORICORIO_PAU]= TUTOR_LEARNSET(TUTOR(MOVE_ICY_WIND)
+											| TUTOR(MOVE_SLEEP_TALK)
+											| TUTOR(MOVE_SNORE)
+											| TUTOR(MOVE_SUBSTITUTE)
+											| TUTOR(MOVE_SWAGGER)
+											| TUTOR(MOVE_SWORDS_DANCE)),
+
+    [SPECIES_ORICORIO_SENSU]= TUTOR_LEARNSET(TUTOR(MOVE_ICY_WIND)
+											| TUTOR(MOVE_SLEEP_TALK)
+											| TUTOR(MOVE_SNORE)
+											| TUTOR(MOVE_SUBSTITUTE)
+											| TUTOR(MOVE_SWAGGER)
+											| TUTOR(MOVE_SWORDS_DANCE)),
+
     [SPECIES_CUTIEFLY]      = TUTOR_LEARNSET(TUTOR(MOVE_DREAM_EATER)
 											| TUTOR(MOVE_PSYCH_UP)
 											| TUTOR(MOVE_SLEEP_TALK)
@@ -9490,7 +9511,42 @@ static const u32 sTutorLearnsets[] =
 											| TUTOR(MOVE_SUBSTITUTE)
 											| TUTOR(MOVE_THUNDER_PUNCH)
 											| TUTOR(MOVE_THUNDER_WAVE)),
+    [SPECIES_CLOBBOPUS]     = TUTOR_LEARNSET(TUTOR(MOVE_MEGA_PUNCH)
+                      | TUTOR(MOVE_SUBSTITUTE)
+                      | TUTOR(MOVE_SLEEP_TALK)
+                      | TUTOR(MOVE_SEISMIC_TOSS)
+                      | TUTOR(MOVE_BODY_SLAM)
+                      | TUTOR(MOVE_SNORE)
+                      | TUTOR(MOVE_ENDURE)
+                      | TUTOR(MOVE_ICE_PUNCH)),
 
+    [SPECIES_GRAPPLOCT]     = TUTOR_LEARNSET(TUTOR(MOVE_MEGA_PUNCH)
+                      | TUTOR(MOVE_SUBSTITUTE)
+                      | TUTOR(MOVE_SLEEP_TALK)
+                      | TUTOR(MOVE_SEISMIC_TOSS)
+                      | TUTOR(MOVE_BODY_SLAM)
+                      | TUTOR(MOVE_SNORE)
+                      | TUTOR(MOVE_ENDURE)
+                      | TUTOR(MOVE_ICE_PUNCH)),
+
+    [SPECIES_REGIELEKI]     = TUTOR_LEARNSET(TUTOR(MOVE_DOUBLE_EDGE)
+                      | TUTOR(MOVE_EXPLOSION)
+                      | TUTOR(MOVE_SLEEP_TALK)
+                      | TUTOR(MOVE_SUBSTITUTE)
+                      | TUTOR(MOVE_BODY_SLAM)
+                      | TUTOR(MOVE_THUNDER_WAVE)
+                      | TUTOR(MOVE_SNORE)
+                      | TUTOR(MOVE_SWIFT)
+                      | TUTOR(MOVE_ENDURE)),
+
+    [SPECIES_REGIDRAGO]     = TUTOR_LEARNSET(TUTOR(MOVE_DOUBLE_EDGE)
+                      | TUTOR(MOVE_EXPLOSION)
+                      | TUTOR(MOVE_SLEEP_TALK)
+                      | TUTOR(MOVE_SUBSTITUTE)
+                      | TUTOR(MOVE_BODY_SLAM)
+                      | TUTOR(MOVE_SNORE)
+                      | TUTOR(MOVE_ENDURE)),
+                      
     [SPECIES_BURMY_SANDY]   = TUTOR_LEARNSET(TUTOR(MOVE_SNORE)),
 
     [SPECIES_BURMY_TRASH]   = TUTOR_LEARNSET(TUTOR(MOVE_SNORE)),

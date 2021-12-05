@@ -7476,6 +7476,24 @@ static const union AnimCmd sAnim_ORICORIO_1[] =
     ANIMCMD_END,
 };
 
+static const union AnimCmd sAnim_ORICORIO_POM_POM_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_ORICORIO_PAU_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_ORICORIO_SENSU_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
 static const union AnimCmd sAnim_CUTIEFLY_1[] =
 {
     ANIMCMD_FRAME(0, 1),
@@ -7895,6 +7913,30 @@ static const union AnimCmd sAnim_MELTAN_1[] =
 };
 
 static const union AnimCmd sAnim_MELMETAL_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_CLOBBOPUS_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_GRAPPLOCT_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_REGIELEKI_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_REGIDRAGO_1[] =
 {
     ANIMCMD_FRAME(0, 1),
     ANIMCMD_END,
@@ -12356,6 +12398,21 @@ static const union AnimCmd *const sAnims_ORICORIO[] ={
     sAnim_ORICORIO_1,
 };
 
+static const union AnimCmd *const sAnims_ORICORIO_POM_POM[] ={
+    sAnim_GeneralFrame0,
+    sAnim_ORICORIO_POM_POM_1,
+};
+
+static const union AnimCmd *const sAnims_ORICORIO_PAU[] ={
+    sAnim_GeneralFrame0,
+    sAnim_ORICORIO_PAU_1,
+};
+
+static const union AnimCmd *const sAnims_ORICORIO_SENSU[] ={
+    sAnim_GeneralFrame0,
+    sAnim_ORICORIO_SENSU_1,
+};
+
 static const union AnimCmd *const sAnims_CUTIEFLY[] ={
     sAnim_GeneralFrame0,
     sAnim_CUTIEFLY_1,
@@ -12694,6 +12751,26 @@ static const union AnimCmd *const sAnims_MELTAN[] ={
 static const union AnimCmd *const sAnims_MELMETAL[] ={
     sAnim_GeneralFrame0,
     sAnim_MELMETAL_1,
+};
+
+static const union AnimCmd *const sAnims_CLOBBOPUS[] ={
+    sAnim_GeneralFrame0,
+    sAnim_CLOBBOPUS_1,
+};
+
+static const union AnimCmd *const sAnims_GRAPPLOCT[] ={
+    sAnim_GeneralFrame0,
+    sAnim_GRAPPLOCT_1,
+};
+
+static const union AnimCmd *const sAnims_REGIELEKI[] ={
+    sAnim_GeneralFrame0,
+    sAnim_REGIELEKI_1,
+};
+
+static const union AnimCmd *const sAnims_REGIDRAGO[] ={
+    sAnim_GeneralFrame0,
+    sAnim_REGIDRAGO_1,
 };
 
 static const union AnimCmd *const sAnims_MEGA_VENUSAUR[] ={
@@ -13883,6 +13960,9 @@ const union AnimCmd *const *const gMonFrontAnimsPtrTable[] =
     ANIM_CMD(CRABRAWLER),
     ANIM_CMD(CRABOMINABLE),
     ANIM_CMD(ORICORIO),
+    ANIM_CMD(ORICORIO_POM_POM),
+    ANIM_CMD(ORICORIO_PAU),
+    ANIM_CMD(ORICORIO_SENSU),
     ANIM_CMD(CUTIEFLY),
     ANIM_CMD(RIBOMBEE),
     ANIM_CMD(ROCKRUFF),
@@ -13951,6 +14031,10 @@ const union AnimCmd *const *const gMonFrontAnimsPtrTable[] =
     ANIM_CMD(ZERAORA),
     ANIM_CMD(MELTAN),
     ANIM_CMD(MELMETAL),
+    ANIM_CMD(CLOBBOPUS),
+    ANIM_CMD(GRAPPLOCT),
+    ANIM_CMD(REGIELEKI),
+    ANIM_CMD(REGIDRAGO),
     ANIM_CMD(EGG),
     ANIM_CMD(MEGA_VENUSAUR),
     ANIM_CMD(MEGA_CHARIZARD_X),
