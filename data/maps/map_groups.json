@@ -93,7 +93,8 @@
     "Underwater_Route128",
     "Underwater_Route129",
     "Underwater_Route105",
-    "Underwater_Route125"
+    "Underwater_Route125",
+    "CratercrestTown"
   ],
   "gMapGroup1": [
     "LittlerootTown_BrendansHouse_1F",
@@ -431,7 +432,10 @@
     "TerraCave_End",
     "AlteringCave",
     "MeteorFalls_StevensCave",
-    "MtMeteor_1F_1R"
+    "MtMeteor_1F_1R",
+    "MtMeteor_2F_1R",
+    "MtMeteor_1F_2R",
+    "MtMeteor_2F_2R"
   ],
   "gMapGroup25": [
     "SecretBase_RedCave1",

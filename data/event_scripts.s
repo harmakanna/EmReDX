@@ -1062,3 +1062,11 @@ Common_EventScript_LegendaryFlewAway:: @ 8273776
 	.include "data/text/birch_speech.inc"
 
 	.include "data/maps/MtMeteor_1F_1R/scripts.inc"
+
+	.include "data/maps/MtMeteor_2F_1R/scripts.inc"
+
+	.include "data/maps/MtMeteor_1F_2R/scripts.inc"
+
+	.include "data/maps/MtMeteor_2F_2R/scripts.inc"
+
+	.include "data/maps/CratercrestTown/scripts.inc"

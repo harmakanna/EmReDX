@@ -4420,6 +4420,46 @@
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/MtMeteor_1F_1R/border.bin",
       "blockdata_filepath": "data/layouts/MtMeteor_1F_1R/map.bin"
+    },
+    {
+      "id": "LAYOUT_MT_METEOR_2F_1R",
+      "name": "MtMeteor_2F_1R_Layout",
+      "width": 38,
+      "height": 47,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/MtMeteor_2F_1R/border.bin",
+      "blockdata_filepath": "data/layouts/MtMeteor_2F_1R/map.bin"
+    },
+    {
+      "id": "LAYOUT_MT_METEOR_1F_2R",
+      "name": "MtMeteor_1F_2R_Layout",
+      "width": 39,
+      "height": 51,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/MtMeteor_1F_2R/border.bin",
+      "blockdata_filepath": "data/layouts/MtMeteor_1F_2R/map.bin"
+    },
+    {
+      "id": "LAYOUT_MT_METEOR_2F_2R",
+      "name": "MtMeteor_2F_2R_Layout",
+      "width": 61,
+      "height": 38,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/MtMeteor_2F_2R/border.bin",
+      "blockdata_filepath": "data/layouts/MtMeteor_2F_2R/map.bin"
+    },
+    {
+      "id": "LAYOUT_CRATERCREST_TOWN",
+      "name": "CratercrestTown_Layout",
+      "width": 25,
+      "height": 25,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Petalburg",
+      "border_filepath": "data/layouts/CratercrestTown/border.bin",
+      "blockdata_filepath": "data/layouts/CratercrestTown/map.bin"
     }
   ]
 }
