@@ -28,10 +28,7 @@
 #include "constants/items.h"
 #include "constants/layouts.h"
 #include "constants/moves.h"
-#include "constants/maps.h"
-#include "constants/species.h"
 #include "constants/trainers.h"
-#include "constants/easy_chat.h"
 #include "constants/trainer_hill.h"
 #include "constants/trainer_types.h"
 
@@ -75,7 +72,7 @@ static void GetChallengeWon(void);
 static void TrainerHillSetTag(void);
 static void SetUpDataStruct(void);
 static void FreeDataStruct(void);
-static void nullsub_2(void);
+static void TrainerHillDummy(void);
 static void SetTimerValue(u32 *dst, u32 val);
 static u32 GetTimerValue(u32 *src);
 static void SetTrainerHillMonLevel(struct Pokemon *mon, u8 level);
@@ -127,7 +124,7 @@ struct
     {TRAINER_CLASS_PKMN_BREEDER, TRAINER_ENCOUNTER_MUSIC_FEMALE},
     {TRAINER_CLASS_COLLECTOR, TRAINER_ENCOUNTER_MUSIC_SUSPICIOUS},
     {TRAINER_CLASS_PKMN_RANGER, TRAINER_ENCOUNTER_MUSIC_COOL},
-    {TRAINER_CLASS_PKMN_TRAINER_3, TRAINER_ENCOUNTER_MUSIC_MALE},
+    {TRAINER_CLASS_RIVAL, TRAINER_ENCOUNTER_MUSIC_MALE},
     {TRAINER_CLASS_YOUNG_COUPLE, TRAINER_ENCOUNTER_MUSIC_GIRL},
     {TRAINER_CLASS_PSYCHIC, TRAINER_ENCOUNTER_MUSIC_INTENSE},
     {TRAINER_CLASS_SR_AND_JR, TRAINER_ENCOUNTER_MUSIC_TWINS},
@@ -202,8 +199,8 @@ static const u16 *const *const sPrizeListSets[] =
     sPrizeLists2
 };
 
-static const u16 sEReader_Pal[] = INCBIN_U16("graphics/misc/trainer_hill_ereader.gbapal");
-static const u8 sRecordWinColors[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GREY, TEXT_COLOR_LIGHT_GREY};
+static const u16 sEReader_Pal[] = INCBIN_U16("graphics/trainer_hill/ereader.gbapal");
+static const u8 sRecordWinColors[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
 
 static const struct TrHillTag *const sDataPerTag[] =
 {
@@ -262,16 +259,16 @@ static const struct ObjectEventTemplate sTrainerObjectEventTemplate =
     .trainerType = TRAINER_TYPE_NORMAL,
 };
 
-static const u32 sNextFloorMapNum[NUM_TRAINER_HILL_FLOORS] = 
+static const u32 sNextFloorMapNum[NUM_TRAINER_HILL_FLOORS] =
 {
-    MAP_NUM(TRAINER_HILL_2F), 
-    MAP_NUM(TRAINER_HILL_3F), 
-    MAP_NUM(TRAINER_HILL_4F), 
+    MAP_NUM(TRAINER_HILL_2F),
+    MAP_NUM(TRAINER_HILL_3F),
+    MAP_NUM(TRAINER_HILL_4F),
     MAP_NUM(TRAINER_HILL_ROOF)
 };
-static const u8 sTrainerPartySlots[][PARTY_SIZE / 2] = 
+static const u8 sTrainerPartySlots[][PARTY_SIZE / 2] =
 {
-    {0, 1, 2}, 
+    {0, 1, 2},
     {3, 4, 5}
 };
 
@@ -356,10 +353,10 @@ static void SetUpDataStruct(void)
 {
     if (sHillData == NULL)
     {
-        sHillData = AllocZeroed(sizeof(struct TrHillStruct2));
+        sHillData = AllocZeroed(sizeof(*sHillData));
         sHillData->floorId = gMapHeader.mapLayoutId - LAYOUT_TRAINER_HILL_1F;
         CpuCopy32(sDataPerTag[gSaveBlock1Ptr->trainerHill.tag], &sHillData->tag, sizeof(sHillData->tag) + 4 * sizeof(struct TrHillFloor));
-        nullsub_2();
+        TrainerHillDummy();
     }
 }
 
@@ -398,7 +395,7 @@ void CopyTrainerHillTrainerText(u8 which, u16 trainerId)
 
 static void TrainerHillStartChallenge(void)
 {
-    nullsub_2();
+    TrainerHillDummy();
     if (!ReadTrainerHillAndValidate())
         gSaveBlock1Ptr->trainerHill.field_3D6E_0f = 1;
     else
@@ -574,12 +571,12 @@ static void IsTrainerHillChallengeActive(void)
         gSpecialVar_Result = TRUE;
 }
 
-void nullsub_129(void)
+static void TrainerHillDummy_Unused(void)
 {
 
 }
 
-static void nullsub_2(void)
+static void TrainerHillDummy(void)
 {
 
 }
@@ -591,13 +588,13 @@ void PrintOnTrainerHillRecordsWindow(void)
 
     SetUpDataStruct();
     FillWindowPixelBuffer(0, PIXEL_FILL(0));
-    x = GetStringCenterAlignXOffset(1, gText_TimeBoard, 0xD0);
-    AddTextPrinterParameterized3(0, 1, x, 2, sRecordWinColors, TEXT_SPEED_FF, gText_TimeBoard);
+    x = GetStringCenterAlignXOffset(FONT_NORMAL, gText_TimeBoard, 0xD0);
+    AddTextPrinterParameterized3(0, FONT_NORMAL, x, 2, sRecordWinColors, TEXT_SKIP_DRAW, gText_TimeBoard);
 
     y = 18;
     for (i = 0; i < 4; i++)
     {
-        AddTextPrinterParameterized3(0, 1, 0, y, sRecordWinColors, TEXT_SPEED_FF, sTagMatchStrings[i]);
+        AddTextPrinterParameterized3(0, FONT_NORMAL, 0, y, sRecordWinColors, TEXT_SKIP_DRAW, sTagMatchStrings[i]);
         y += 15;
         total = GetTimerValue(&gSaveBlock1Ptr->trainerHillTimes[i]);
         minutes = total / (60 * 60);
@@ -609,13 +606,13 @@ void PrintOnTrainerHillRecordsWindow(void)
         secondsFraction = (total * 168) / 100;
         ConvertIntToDecimalStringN(gStringVar3, secondsFraction, STR_CONV_MODE_LEADING_ZEROS, 2);
         StringExpandPlaceholders(StringCopy(gStringVar4, gText_TimeCleared), gText_XMinYDotZSec);
-        x = GetStringRightAlignXOffset(1, gStringVar4, 0xD0);
-        AddTextPrinterParameterized3(0, 1, x, y, sRecordWinColors, TEXT_SPEED_FF, gStringVar4);
+        x = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar4, 0xD0);
+        AddTextPrinterParameterized3(0, FONT_NORMAL, x, y, sRecordWinColors, TEXT_SKIP_DRAW, gStringVar4);
         y += 17;
     }
 
     PutWindowTilemap(0);
-    CopyWindowToVram(0, 3);
+    CopyWindowToVram(0, COPYWIN_FULL);
     FreeDataStruct();
 }
 
@@ -672,22 +669,17 @@ bool32 LoadTrainerHillFloorObjectEventScripts(void)
     return TRUE;
 }
 
-static u32 sub_81D5F58(u8 floorId, u32 bit, u32 arg2, u32 arg3)
+static u16 GetMetatileForFloor(u8 floorId, u32 x, u32 y, u32 stride) // stride is always 16
 {
-    u16 var0, var1;
-    #ifndef NONMATCHING
-    register u16 var2 asm("r3"); //compiler keeps wanting to "mov r3, 0x80" instead of "mov r2 0x80" and then later "add r3, r2, 0"
-    #else
-    u16 var2;
-    #endif
-    u16 var3;
+    bool8 impassable;
+    u16 metatile;
+    u16 elevation;
 
-    var0 = (sHillData->floors[floorId].display.unk3A0[arg2] >> (15 - bit) & 1);
-    var1 = sHillData->floors[floorId].display.data[arg3 * arg2 + bit];
-    var2 = 0x200;
-    var3 = 0x3000;
+    impassable = (sHillData->floors[floorId].display.collisionData[y] >> (15 - x) & 1);
+    metatile = sHillData->floors[floorId].display.metatileData[stride * y + x] + NUM_METATILES_IN_PRIMARY;
+    elevation = 3 << MAPGRID_ELEVATION_SHIFT;
 
-    return ((var0 << 10) | var3) | (var1 | var2);
+    return ((impassable << MAPGRID_COLLISION_SHIFT) & MAPGRID_COLLISION_MASK) | elevation | (metatile & MAPGRID_METATILE_ID_MASK);
 }
 
 void GenerateTrainerHillFloorLayout(u16 *mapArg)
@@ -716,6 +708,8 @@ void GenerateTrainerHillFloorLayout(u16 *mapArg)
     gBackupMapLayout.width = 31;
     gBackupMapLayout.height = 35;
     dst = mapArg + 224;
+
+    // First 5 rows of the map (Entrance / Exit) are always the same
     for (i = 0; i < 5; i++)
     {
         for (j = 0; j < 16; j++)
@@ -724,10 +718,11 @@ void GenerateTrainerHillFloorLayout(u16 *mapArg)
         src += 16;
     }
 
+    // Load the 16x16 floor-specific layout
     for (i = 0; i < 16; i++)
     {
         for (j = 0; j < 16; j++)
-            dst[j] = sub_81D5F58(mapId, j, i, 0x10);
+            dst[j] = GetMetatileForFloor(mapId, j, i, 16);
         dst += 31;
     }
 
@@ -903,7 +898,7 @@ void FillHillTrainersParties(void)
 // hill trainers.
 u32 GetTrainerHillAIFlags(void)
 {
-    return (AI_SCRIPT_CHECK_BAD_MOVE | AI_SCRIPT_TRY_TO_FAINT | AI_SCRIPT_CHECK_VIABILITY);
+    return (AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY);
 }
 
 u8 GetTrainerEncounterMusicIdInTrainerHill(u16 trainerId)

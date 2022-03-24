@@ -1,11 +1,11 @@
 #ifndef GUARD_DAYCARE_CONSTANTS_H
 #define GUARD_DAYCARE_CONSTANTS_H
 
-// Parent compatability scores
+// Parent compatibility scores
 #define PARENTS_INCOMPATIBLE       0
 #define PARENTS_LOW_COMPATIBILITY  20
-#define PARENTS_MED_COMPATABILITY  50
-#define PARENTS_MAX_COMPATABILITY  70
+#define PARENTS_MED_COMPATIBILITY  50
+#define PARENTS_MAX_COMPATIBILITY  70
 
 // Daycare state
 #define DAYCARE_NO_MONS     0
@@ -21,7 +21,7 @@
 #define DAYCARE_EXITED_LEVEL_MENU 2 // would be redundant with above if GF had used the same value
 
 // Array buffers
-#define EGG_MOVES_ARRAY_COUNT           10
+#define EGG_MOVES_ARRAY_COUNT           19
 #define EGG_LVL_UP_MOVES_ARRAY_COUNT    (MAX_LEVEL_UP_MOVES > 50 ? MAX_LEVEL_UP_MOVES : 50)
 
 #endif //GUARD_DAYCARE_CONSTANTS_H
