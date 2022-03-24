@@ -9744,6 +9744,42 @@ const struct PokedexEntry gPokedexEntries[] =
     .trainerOffset = 2,
   },
 
+  [NATIONAL_DEX_DREEPY] =
+  {
+    .categoryName = _("Lingering"),
+    .height = 5,
+    .weight = 20,
+    .description = gDreepyPokedexText,
+    .pokemonScale = 411,
+    .pokemonOffset = 2,
+    .trainerScale = 256,
+    .trainerOffset = 0,
+  },
+
+  [NATIONAL_DEX_DRAKLOAK] =
+  {
+    .categoryName = _("Caretaker"),
+    .height = 14,
+    .weight = 110,
+    .description = gDrakloakPokedexText,
+    .pokemonScale = 256,
+    .pokemonOffset = 2,
+    .trainerScale = 256,
+    .trainerOffset = 0,
+  },
+
+  [NATIONAL_DEX_DRAGAPULT] =
+  {
+    .categoryName = _("Stealth"),
+    .height = 30,
+    .weight = 500,
+    .description = gDragapultPokedexText,
+    .pokemonScale = 356,
+		.pokemonOffset = 17,
+		.trainerScale = 256,
+		.trainerOffset = 0,
+  },
+
   [NATIONAL_DEX_REGIELEKI] =
   {
     .categoryName = _("Electron"),

@@ -827,6 +827,9 @@ const struct LevelUpMove *const gLevelUpLearnsets[NUM_SPECIES] =
     [SPECIES_MELMETAL] = sMelmetalLevelUpLearnset,
     [SPECIES_CLOBBOPUS] = sClobbopusLevelUpLearnset,
     [SPECIES_GRAPPLOCT] = sGrapploctLevelUpLearnset,
+    [SPECIES_DREEPY] = sDreepyLevelUpLearnset,
+    [SPECIES_DRAKLOAK] = sDrakloakLevelUpLearnset,
+    [SPECIES_DRAGAPULT] = sDragapultLevelUpLearnset,
     [SPECIES_REGIELEKI] = sRegielekiLevelUpLearnset,
     [SPECIES_REGIDRAGO] = sRegidragoLevelUpLearnset,
     // Megas have the same learnsets

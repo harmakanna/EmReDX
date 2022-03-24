@@ -4870,6 +4870,23 @@ const u8 gGrapploctPokedexText[] = _(
     "performs with its tentacles tremendously\n"
     "powerful.");
 
+const u8 gDreepyPokedexText[] = _(
+    "If this Pokémon is alone, a mere child\n"
+    "could defeat it. But if Dreepy has friends\n"
+    "to help it train, it can evolve and become\n"
+    "much stronger.");
+
+const u8 gDrakloakPokedexText[] = _(
+    "It's capable of flying faster than 120\n"
+    "miles per hour. It battles alongside\n"
+    "Dreepy and dotes on them until they\n"
+    "successfully evolve.");
+
+const u8 gDragapultPokedexText[] = _(
+    "Apparently, the Dreepy inside Dragapult's\n"
+    "horns eagerly look forward to being\n"
+    "launched out at Mach speeds.");
+     
 const u8 gRegielekiPokedexText[] = _(
     "This Pokémon is a cluster of electrical\n"
     "energy. It's said that removing the rings\n"
