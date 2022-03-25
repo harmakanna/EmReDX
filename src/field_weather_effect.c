@@ -31,7 +31,7 @@ const u8 gWeatherAshTiles[] = INCBIN_U8("graphics/weather/ash.4bpp");
 const u8 gWeatherRainTiles[] = INCBIN_U8("graphics/weather/rain.4bpp");
 const u8 gWeatherSandstormTiles[] = INCBIN_U8("graphics/weather/sandstorm.4bpp");
 
-const struct SpritePalette sSpritePalette_Weather0 = {gUnknown_083970E8, 0x1201};
+//const struct SpritePalette sSpritePalette_Weather0 = {gUnknown_083970E8, 0x1201};
 const struct SpritePalette sCloudsSpritePalette = {gCloudsWeatherPalette, 0x1201};
 const struct SpritePalette sSandstormSpritePalette = {gSandstormWeatherPalette, 0x1201};
 
@@ -1659,7 +1659,7 @@ static void CreateAshSprites(void)
 
     if (!gWeatherPtr->ashSpritesCreated)
     {
-        LoadCustomWeatherSpritePalette(&sSpritePalette_Weather0);
+        //LoadCustomWeatherSpritePalette(&sSpritePalette_Weather0);
         for (i = 0; i < NUM_ASH_SPRITES; i++)
         {
             spriteId = CreateSpriteAtEnd(&sAshSpriteTemplate, 0, 0, 0x4E);
@@ -1878,7 +1878,7 @@ static void CreateFogDiagonalSprites(void)
     {
         fogDiagonalSpriteSheet = gFogDiagonalSpriteSheet;
         LoadSpriteSheet(&fogDiagonalSpriteSheet);
-        LoadCustomWeatherSpritePalette(&sSpritePalette_Weather0);
+        //LoadCustomWeatherSpritePalette(&sSpritePalette_Weather0);
         for (i = 0; i < NUM_FOG_DIAGONAL_SPRITES; i++)
         {
             spriteId = CreateSpriteAtEnd(&sFogDiagonalSpriteTemplate, 0, (i / 5) * 64, 0xFF);

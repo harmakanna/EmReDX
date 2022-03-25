@@ -55,8 +55,8 @@
 #define AI_FLAG_SCREENER              (1 << 14)  // AI prefers screening effects like reflect, mist, etc. TODO unfinished
 #define AI_FLAG_SMART_SWITCHING       (1 << 15)  // AI includes a lot more switching checks
 // Trainer Flags to force specific team orders for bosses
-#define AI_SCRIPT_DO_NOT_SWITCH       (1 << 10) //Prevents switching in all circumstances
-#define AI_SCRIPT_PRESERVE_ORDER      (1 << 11) //When a Pokemon faints, they send out the next pokemon they have in order
+#define AI_SCRIPT_DO_NOT_SWITCH       (1 << 16) //Prevents switching in all circumstances
+#define AI_SCRIPT_PRESERVE_ORDER      (1 << 17) //When a Pokemon faints, they send out the next pokemon they have in order
 // 'other' ai logic flags
 #define AI_FLAG_ROAMING               (1 << 29)
 #define AI_FLAG_SAFARI                (1 << 30)

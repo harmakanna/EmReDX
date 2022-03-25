@@ -1336,7 +1336,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_TARGETTOOHEAVY - 12] = sText_TargetTooHeavy,
 };
 
-const u16 gMentalHerbCureStringIds[] = 
+const u16 gMentalHerbCureStringIds[] =
 {
     [B_MSG_MENTALHERBCURE_INFATUATION] = STRINGID_ATKGOTOVERINFATUATION,
     [B_MSG_MENTALHERBCURE_TAUNT]       = STRINGID_BUFFERENDS,
@@ -1351,7 +1351,7 @@ const u16 gTerrainStringIds[] =
     STRINGID_TERRAINBECOMESMISTY, STRINGID_TERRAINBECOMESGRASSY, STRINGID_TERRAINBECOMESELECTRIC, STRINGID_TERRAINBECOMESPSYCHIC
 };
 
-const u16 gTerrainEndingStringIds[] = 
+const u16 gTerrainEndingStringIds[] =
 {
     STRINGID_MISTYTERRAINENDS, STRINGID_GRASSYTERRAINENDS, STRINGID_ELECTRICTERRAINENDS, STRINGID_PSYCHICTERRAINENDS
 };
@@ -1814,8 +1814,8 @@ static const u8 * const sStatNamesTable2[] =
     gText_SpDef, gText_Defense, gText_Speed
 };
 
-const u8 gText_SafariBalls[] = _("{HIGHLIGHT DARK_GRAY}SAFARI BALLS");
-const u8 gText_SafariBallLeft[] = _("{HIGHLIGHT DARK_GRAY}Left: $" "{HIGHLIGHT DARK_GRAY}");
+const u8 gText_SafariBalls[] = _("{HIGHLIGHT DARK_GREY}SAFARI BALLS");
+const u8 gText_SafariBallLeft[] = _("{HIGHLIGHT DARK_GREY}Left: $" "{HIGHLIGHT DARK_GREY}");
 const u8 gText_Sleep[] = _("sleep");
 const u8 gText_Poison[] = _("poison");
 const u8 gText_Burn[] = _("burn");

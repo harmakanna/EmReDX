@@ -10,6 +10,7 @@
 #include "random.h"
 #include "util.h"
 #include "constants/abilities.h"
+#include "constants/battle_ai.h"
 #include "constants/item_effects.h"
 #include "constants/items.h"
 #include "constants/moves.h"
@@ -679,6 +680,37 @@ static u32 GestBestMonOffensive(struct Pokemon *party, int firstId, int lastId, 
     }
 
     return PARTY_SIZE;
+}
+
+static u32 GetPreservedOrderMon(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
+{
+    int i, j;
+    int bestDmg = 0;
+    int bestMonId = PARTY_SIZE;
+
+    // If we couldn't find the best mon in terms of typing, find the one that deals most damage.
+    for (i = firstId; i < lastId; i++)
+    {
+        if (gBitTable[i] & invalidMons)
+            continue;
+        else
+            return i;
+        /*for (j = 0; j < PARTY_SIZE; j++)
+        {
+            u32 move = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+            if (move != MOVE_NONE && gBattleMoves[move].power != 0)
+            {
+                s32 dmg = AI_CalcPartyMonDamage(move, gActiveBattler, opposingBattler, &party[i]);
+                if (bestDmg < dmg)
+                {
+                    bestDmg = dmg;
+                    bestMonId = i;
+                }
+            }
+        }*/
+    }
+
+    return bestMonId;
 }
 
 static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
