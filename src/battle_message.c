@@ -8,6 +8,7 @@
 #include "data.h"
 #include "event_data.h"
 #include "frontier_util.h"
+#include "graphics.h"
 #include "international_string_util.h"
 #include "item.h"
 #include "link.h"
@@ -22,7 +23,6 @@
 #include "constants/abilities.h"
 #include "constants/battle_dome.h"
 #include "constants/battle_string_ids.h"
-#include "constants/berry.h"
 #include "constants/frontier_util.h"
 #include "constants/items.h"
 #include "constants/moves.h"
@@ -45,18 +45,13 @@ struct BattleWindowText
     u8 shadowColor;
 };
 
-extern const u16 gUnknown_08D85620[];
-
-// this file's functions
 static void ChooseMoveUsedParticle(u8 *textPtr);
 static void ChooseTypeOfMoveUsedString(u8 *dst);
 static void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst);
 
-// EWRAM vars
-static EWRAM_DATA u8 sBattlerAbilities[MAX_BATTLERS_COUNT] = {0};
+static EWRAM_DATA u16 sBattlerAbilities[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA struct BattleMsgData *gBattleMsgDataPtr = NULL;
 
-// const rom data
 // todo: make some of those names less vague: attacker/target vs pkmn, etc.
 
 static const u8 sText_Trainer1LoseText[] = _("{B_TRAINER1_LOSE_TEXT}");
@@ -182,7 +177,7 @@ static const u8 sText_PkmnStayedAwakeUsing[] = _("{B_DEF_NAME_WITH_PREFIX} staye
 static const u8 sText_PkmnStoringEnergy[] = _("{B_ATK_NAME_WITH_PREFIX} is storing\nenergy!");
 static const u8 sText_PkmnUnleashedEnergy[] = _("{B_ATK_NAME_WITH_PREFIX} unleashed\nenergy!");
 static const u8 sText_PkmnFatigueConfusion[] = _("{B_ATK_NAME_WITH_PREFIX} became\nconfused due to fatigue!");
-static const u8 sText_PkmnPickedUpItem[] = _("{B_PLAYER_NAME} picked up\n¥{B_BUFF1}!\p");
+static const u8 sText_PlayerPickedUpMoney[] = _("{B_PLAYER_NAME} picked up\n¥{B_BUFF1}!\p");
 static const u8 sText_PkmnUnaffected[] = _("{B_DEF_NAME_WITH_PREFIX} is\nunaffected!");
 static const u8 sText_PkmnTransformedInto[] = _("{B_ATK_NAME_WITH_PREFIX} transformed\ninto {B_BUFF1}!");
 static const u8 sText_PkmnMadeSubstitute[] = _("{B_ATK_NAME_WITH_PREFIX} made\na SUBSTITUTE!");
@@ -305,15 +300,15 @@ static const u8 sText_PkmnsXPreventsFlinching[] = _("{B_EFF_NAME_WITH_PREFIX}'s 
 static const u8 sText_PkmnsXPreventsYsZ[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_ATK_ABILITY}\nprevents {B_DEF_NAME_WITH_PREFIX}'s\l{B_DEF_ABILITY} from working!");
 static const u8 sText_PkmnsXCuredItsYProblem[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX}'s {B_SCR_ACTIVE_ABILITY}\ncured its {B_BUFF1} problem!");
 static const u8 sText_PkmnsXHadNoEffectOnY[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX}'s {B_SCR_ACTIVE_ABILITY}\nhad no effect on {B_EFF_NAME_WITH_PREFIX}!");
-static const u8 sText_StatSharply[] = _("sharply ");
+const u8 gText_StatSharply[] = _("sharply ");
 const u8 gText_StatRose[] = _("rose!");
 static const u8 sText_StatHarshly[] = _("harshly ");
 static const u8 sText_StatFell[] = _("fell!");
-static const u8 sText_PkmnsStatChanged[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_BUFF1}\n{B_BUFF2}");
-const u8 gText_PkmnsStatChanged2[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_BUFF1}\n{B_BUFF2}");
-static const u8 sText_UsingXTheYOfZN[] = _("Using {B_LAST_ITEM}, the {B_BUFF1}\nof {B_SCR_ACTIVE_NAME_WITH_PREFIX} {B_BUFF2}");
-static const u8 sText_PkmnsStatChanged3[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_BUFF1}\n{B_BUFF2}");
-static const u8 sText_PkmnsStatChanged4[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_BUFF1}\n{B_BUFF2}");
+static const u8 sText_AttackersStatRose[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_BUFF1}\n{B_BUFF2}");
+const u8 gText_DefendersStatRose[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_BUFF1}\n{B_BUFF2}");
+static const u8 sText_UsingItemTheStatOfPkmnRose[] = _("Using {B_LAST_ITEM}, the {B_BUFF1}\nof {B_SCR_ACTIVE_NAME_WITH_PREFIX} {B_BUFF2}");
+static const u8 sText_AttackersStatFell[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_BUFF1}\n{B_BUFF2}");
+static const u8 sText_DefendersStatFell[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_BUFF1}\n{B_BUFF2}");
 static const u8 sText_StatsWontIncrease2[] = _("{B_ATK_NAME_WITH_PREFIX}'s stats won't\ngo any higher!");
 static const u8 sText_StatsWontDecrease2[] = _("{B_DEF_NAME_WITH_PREFIX}'s stats won't\ngo any lower!");
 static const u8 sText_CriticalHit[] = _("A critical hit!");
@@ -343,9 +338,9 @@ static const u8 sText_ButItFailed[] = _("But it failed!");
 static const u8 sText_ItHurtConfusion[] = _("It hurt itself in its\nconfusion!");
 static const u8 sText_MirrorMoveFailed[] = _("The MIRROR MOVE failed!");
 static const u8 sText_StartedToRain[] = _("It started to rain!");
-static const u8 sText_DownpourStarted[] = _("A downpour started!");
+static const u8 sText_DownpourStarted[] = _("A downpour started!"); // corresponds to DownpourText in pokegold and pokecrystal and is used by Rain Dance in GSC
 static const u8 sText_RainContinues[] = _("Rain continues to fall.");
-static const u8 sText_DownpourContinues[] = _("The downpour continues.");
+static const u8 sText_DownpourContinues[] = _("The downpour continues."); // unused
 static const u8 sText_RainStopped[] = _("The rain stopped.");
 static const u8 sText_SandstormBrewed[] = _("A sandstorm brewed!");
 static const u8 sText_SandstormRages[] = _("The sandstorm rages.");
@@ -387,7 +382,7 @@ static const u8 sText_ThrewPokeblockAtPkmn[] = _("{B_PLAYER_NAME} threw a {POKEB
 static const u8 sText_OutOfSafariBalls[] = _("{PLAY_SE SE_DING_DONG}ANNOUNCER: You're out of\nSAFARI BALLS! Game over!\p");
 static const u8 sText_OpponentMon1Appeared[] = _("{B_OPPONENT_MON1_NAME} appeared!\p");
 static const u8 sText_WildPkmnAppeared[] = _("Wild {B_OPPONENT_MON1_NAME} appeared!\p");
-static const u8 sText_WildPkmnAppeared2[] = _("Wild {B_OPPONENT_MON1_NAME} appeared!\p");
+static const u8 sText_LegendaryPkmnAppeared[] = _("Wild {B_OPPONENT_MON1_NAME} appeared!\p");
 static const u8 sText_WildPkmnAppearedPause[] = _("Wild {B_OPPONENT_MON1_NAME} appeared!{PAUSE 127}");
 static const u8 sText_TwoWildPkmnAppeared[] = _("Wild {B_OPPONENT_MON1_NAME} and\n{B_OPPONENT_MON2_NAME} appeared!\p");
 static const u8 sText_Trainer1WantsToBattle[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}\nwould like to battle!\p");
@@ -432,6 +427,8 @@ static const u8 sText_ExclamationMark4[] = _("!");
 static const u8 sText_ExclamationMark5[] = _("!");
 static const u8 sText_Accuracy[] = _("accuracy");
 static const u8 sText_Evasiveness[] = _("evasiveness");
+static const u8 sText_PkmnTookTargetHigh[] = _("{B_ATK_NAME_WITH_PREFIX} took {B_DEF_NAME_WITH_PREFIX}\ninto the air!");
+static const u8 sText_TargetTooHeavy[] = _("But the target\nwas too heavy!");
 
 const u8 * const gStatNamesTable[NUM_BATTLE_STATS] =
 {
@@ -512,13 +509,13 @@ static const u8 sText_TwoInGameTrainersDefeated[];
 static const u8 sText_Trainer2LoseText[];
 
 // New battle strings.
-static const s8 sText_EnduredViaSturdy[] = _("{B_DEF_NAME_WITH_PREFIX} ENDURED\nthe hit using {B_DEF_ABILITY}!");
+static const s8 sText_EnduredViaSturdy[] = _("{B_DEF_NAME_WITH_PREFIX} Endured\nthe hit using {B_DEF_ABILITY}!");
 static const s8 sText_PowerHerbActivation[] = _("{B_ATK_NAME_WITH_PREFIX} became fully charged\ndue to its {B_LAST_ITEM}!");
 static const s8 sText_HurtByItem[] = _("{B_ATK_NAME_WITH_PREFIX} was hurt\nby its {B_LAST_ITEM}!");
 static const s8 sText_BadlyPoisonedByItem[] = _("{B_EFF_NAME_WITH_PREFIX} was badly \npoisoned by the {B_LAST_ITEM}!");
 static const s8 sText_BurnedByItem[] = _("{B_EFF_NAME_WITH_PREFIX} was burned\nby the {B_LAST_ITEM}!");
 static const s8 sText_TargetAbilityActivates[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_DEF_ABILITY} activates!");
-static const u8 sText_GravityIntensified[] = _("GRAVITY intensified!");
+static const u8 sText_GravityIntensified[] = _("Gravity intensified!");
 static const u8 sText_TargetIdentified[] = _("{B_DEF_NAME_WITH_PREFIX} was \nidentified!");
 static const u8 sText_TargetWokeUp[] = _("{B_DEF_NAME_WITH_PREFIX} woke up!");
 static const u8 sText_PkmnStoleAndAteItem[] = _("{B_ATK_NAME_WITH_PREFIX} stole and\nate {B_DEF_NAME_WITH_PREFIX}'s {B_LAST_ITEM}!");
@@ -545,12 +542,12 @@ static const u8 sText_VanishedInstantly[] =_("{B_ATK_NAME_WITH_PREFIX} vanished\
 static const u8 sText_ProtectedTeam[] =_("{B_CURRENT_MOVE} protected\n{B_ATK_TEAM2} team!");
 static const u8 sText_SharedItsGuard[] =_("{B_ATK_NAME_WITH_PREFIX} shared its\nguard with the target!");
 static const u8 sText_SharedItsPower[] =_("{B_ATK_NAME_WITH_PREFIX} shared its\npower with the target!");
-static const u8 sText_SwapsDefAndSpDefOfAllPkmn[] =_("It created a bizarre area in which\nthe Defense and Sp.Def stats are swapped!");
+static const u8 sText_SwapsDefAndSpDefOfAllPkmn[] =_("It created a bizarre area in which the\nDefense and Sp.Def stats are swapped!");
 static const u8 sText_BecameNimble[] =_("{B_ATK_NAME_WITH_PREFIX} became nimble!");
 static const u8 sText_HurledIntoTheAir[] =_("{B_DEF_NAME_WITH_PREFIX} was hurled\ninto the air!");
 static const u8 sText_HeldItemsLoseEffects[] =_("It created a bizarre area in which\nPokémon's held items lose their effects!");
 static const u8 sText_FellStraightDown[] =_("{B_DEF_NAME_WITH_PREFIX} fell\nstraight down!");
-static const u8 sText_TransformedIntoWaterType[] =_("{B_DEF_NAME_WITH_PREFIX} transformed\ninto the water type!");
+static const u8 sText_TargetChangedType[] =_("{B_DEF_NAME_WITH_PREFIX} transformed\ninto the {B_BUFF1} type!");
 static const u8 sText_PkmnAcquiredSimple[] =_("{B_DEF_NAME_WITH_PREFIX} acquired\nSimple!");
 static const u8 sText_KindOffer[] =_("{B_DEF_NAME_WITH_PREFIX}\ntook the kind offer!");
 static const u8 sText_ResetsTargetsStatLevels[] =_("{B_DEF_NAME_WITH_PREFIX}'s stat changes\nwere removed!");
@@ -566,11 +563,11 @@ static const u8 sText_Electromagnetism[] = _("electromagnetism");
 static const u8 sText_BufferEnds[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_BUFF1}\nwore off!");
 static const u8 sText_ThroatChopEnds[] = _("{B_ATK_NAME_WITH_PREFIX} can\nuse sound-based moves again!");
 static const u8 sText_TelekinesisEnds[] = _("{B_ATK_NAME_WITH_PREFIX} was freed\nfrom the telekinesis!");
-static const u8 sText_TailwindEnds[] = _("{B_ATK_TEAM1} team's tailwind\n petered out!");
-static const u8 sText_LuckyChantEnds[] = _("{B_ATK_TEAM1} team's Lucky Chant\n wore off!");
+static const u8 sText_TailwindEnds[] = _("{B_ATK_TEAM1} team's tailwind\npetered out!");
+static const u8 sText_LuckyChantEnds[] = _("{B_ATK_TEAM1} team's Lucky Chant\nwore off!");
 static const u8 sText_TrickRoomEnds[] = _("The twisted dimensions returned to\nnormal!");
-static const u8 sText_WonderRoomEnds[] = _("Wonder Room wore off, and\nDefense and Sp. Def stats returned to normal!");
-static const u8 sText_MagicRoomEnds[] = _("Magic Room wore off, and\nheld items' effects returned to normal!");
+static const u8 sText_WonderRoomEnds[] = _("Wonder Room wore off, and Defense\nand Sp. Def stats returned to normal!");
+static const u8 sText_MagicRoomEnds[] = _("Magic Room wore off, and held items'\neffects returned to normal!");
 static const u8 sText_MudSportEnds[] = _("The effects of Mud Sport have faded.");
 static const u8 sText_WaterSportEnds[] = _("The effects of Water Sport have faded.");
 static const u8 sText_GravityEnds[] = _("Gravity returned to normal!");
@@ -584,7 +581,7 @@ static const u8 sText_ElectricTerrainEnds[] = _("The electricity disappeared\nfr
 static const u8 sText_MistyTerrainEnds[] = _("The mist disappeared\nfrom the battlefield.");
 static const u8 sText_PsychicTerrainEnds[] = _("The weirdness disappeared\nfrom the battlefield.");
 static const u8 sText_GrassyTerrainEnds[] = _("The grass disappeared\nfrom the battlefield.");
-static const u8 sText_AngryPointActivates[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_DEF_ABILITY} maxed\nits attack!");
+static const u8 sText_TargetsStatWasMaxedOut[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_DEF_ABILITY} maxed\nits {B_BUFF1}!");
 static const u8 sText_PoisonHealHpUp[] = _("The poisoning healed {B_ATK_NAME_WITH_PREFIX}\na little bit!");
 static const u8 sText_BadDreamsDmg[] = _("{B_DEF_NAME_WITH_PREFIX} is tormented\nby {B_ATK_ABILITY}!");
 static const u8 sText_MoldBreakerEnters[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} breaks the mold!");
@@ -601,7 +598,7 @@ static const u8 sText_SnowWarningHail[] = _("It started to hail!");
 static const u8 sText_FriskActivates[] = _("{B_ATK_NAME_WITH_PREFIX} frisked {B_DEF_NAME_WITH_PREFIX} and\nfound its {B_LAST_ITEM}!");
 static const u8 sText_UnnerveEnters[] = _("The opposing team is too nervous\nto eat Berries!");
 static const u8 sText_HarvestBerry[] = _("{B_ATK_NAME_WITH_PREFIX} harvested\nits {B_LAST_ITEM}!");
-static const u8 sText_MoxieAtkRise[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_ATK_ABILITY} raised its Attack!");
+static const u8 sText_LastAbilityRaisedBuff1[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_LAST_ABILITY}\nraised its {B_BUFF1}!");
 static const u8 sText_MagicBounceActivates[] = _("The {B_DEF_NAME_WITH_PREFIX} bounced the\n{B_ATK_NAME_WITH_PREFIX} back!");
 static const u8 sText_ProteanTypeChange[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_ATK_ABILITY} transformed\nit into the {B_BUFF1} type!");
 static const u8 sText_SymbiosisItemPass[] = _("{B_ATK_NAME_WITH_PREFIX} passed its {B_LAST_ITEM}\nto {B_SCR_ACTIVE_NAME_WITH_PREFIX} through {B_ATK_ABILITY}!");
@@ -618,9 +615,9 @@ static const u8 sText_TargetStatWontGoHigher[] = _("{B_DEF_NAME_WITH_PREFIX}'s {
 static const u8 sText_PkmnMoveBouncedViaAbility[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_CURRENT_MOVE} was\nbounced back by {B_DEF_NAME_WITH_PREFIX}'s\l{B_DEF_ABILITY}!");
 static const u8 sText_ImposterTransform[] = _("{B_ATK_NAME_WITH_PREFIX} transformed into\n{B_DEF_NAME_WITH_PREFIX} using {B_LAST_ABILITY}!");
 static const u8 sText_NotDoneYet[] = _("This move effect is not done yet!\p");
-static const u8 sText_PkmnBlewAwayToxicSpikes[] = _("{B_ATK_NAME_WITH_PREFIX} blew away\nTOXIC SPIKES!");
-static const u8 sText_PkmnBlewAwayStickyWeb[] = _("{B_ATK_NAME_WITH_PREFIX} blew away\nSTICKY WEB!");
-static const u8 sText_PkmnBlewAwayStealthRock[] = _("{B_ATK_NAME_WITH_PREFIX} blew away\nSTEALTH ROCK!");
+static const u8 sText_PkmnBlewAwayToxicSpikes[] = _("{B_ATK_NAME_WITH_PREFIX} blew away\nToxic Spikes!");
+static const u8 sText_PkmnBlewAwayStickyWeb[] = _("{B_ATK_NAME_WITH_PREFIX} blew away\nSticky Web!");
+static const u8 sText_PkmnBlewAwayStealthRock[] = _("{B_ATK_NAME_WITH_PREFIX} blew away\nStealth Rock!");
 static const u8 sText_StickyWebUsed[] = _("A sticky web spreads out on the\nground around {B_DEF_TEAM2} team!");
 static const u8 sText_QuashSuccess[] = _("The opposing {B_ATK_NAME_WITH_PREFIX}'s move was postponed!");
 static const u8 sText_IonDelugeOn[] = _("A deluge of ions showers\nthe battlefield!");
@@ -630,11 +627,12 @@ static const u8 sText_TerrainBecomesGrassy[] = _("Grass grew to cover\nthe battl
 static const u8 sText_TerrainBecomesElectric[] = _("An electric current runs across\nthe battlefield!");
 static const u8 sText_TerrainBecomesPsychic[] = _("The battlefield got weird!");
 static const u8 sText_TargetElectrified[] = _("The {B_DEF_NAME_WITH_PREFIX}'s moves\nhave been electrified!");
-static const u8 sText_AssaultVestDoesntAllow[] = _("The effects of the {B_LAST_ITEM} prevent status\nmoves from being used!\p");
+static const u8 sText_AssaultVestDoesntAllow[] = _("{B_LAST_ITEM}'s effects prevent\nstatus moves from being used!\p");
 static const u8 sText_GravityPreventsUsage[] = _("{B_ATK_NAME_WITH_PREFIX} can't use {B_CURRENT_MOVE}\nbecause of gravity!\p");
 static const u8 sText_HealBlockPreventsUsage[] = _("{B_ATK_NAME_WITH_PREFIX} was\nprevented from healing!\p");
 static const u8 sText_MegaEvoReacting[] = _("{B_ATK_NAME_WITH_PREFIX}'s {B_LAST_ITEM} is \nreacting to {B_ATK_TRAINER_NAME}'s Mega Ring!");
-static const u8 sText_MegaEvoEvolved[] = _("{B_ATK_NAME_WITH_PREFIX} has Mega\nEvolved into Mega {B_BUFF1}!");
+static const u8 sText_FerventWishReached[] = _("{B_ATK_TRAINER_NAME}'s fervent wish\nhas reached {B_ATK_NAME_WITH_PREFIX}!");
+static const u8 sText_MegaEvoEvolved[] = _("{B_ATK_NAME_WITH_PREFIX} has Mega Evolved into\nMega {B_BUFF1}!");
 static const u8 sText_drastically[] = _("drastically ");
 static const u8 sText_severely[] = _("severely ");
 static const u8 sText_Infestation[] = _("{B_DEF_NAME_WITH_PREFIX} has been afflicted\nwith an infestation by {B_ATK_NAME_WITH_PREFIX}!");
@@ -653,7 +651,7 @@ static const u8 sText_MistyTerrainPreventsStatus[] = _("{B_DEF_NAME_WITH_PREFIX}
 static const u8 sText_GrassyTerrainHeals[] = _("{B_ATK_NAME_WITH_PREFIX} is healed\nby the grassy terrain!");
 static const u8 sText_ElectricTerrainPreventsSleep[] = _("{B_DEF_NAME_WITH_PREFIX} surrounds itself\nwith electrified terrain!");
 static const u8 sText_PsychicTerrainPreventsPriority[] = _("{B_DEF_NAME_WITH_PREFIX} surrounds itself\nwith psychic terrain!");
-static const u8 sText_SafetyGooglesProtected[] = _("{B_DEF_NAME_WITH_PREFIX} is not affected\nthanks to its {B_LAST_ITEM}!");
+static const u8 sText_SafetyGogglesProtected[] = _("{B_DEF_NAME_WITH_PREFIX} is not affected\nthanks to its {B_LAST_ITEM}!");
 static const u8 sText_FlowerVeilProtected[] = _("{B_DEF_NAME_WITH_PREFIX} surrounded itself\nwith a veil of petals!");
 static const u8 sText_SweetVeilProtected[] = _("{B_DEF_NAME_WITH_PREFIX} surrounded itself\nwith a veil of sweetness!");
 static const u8 sText_AromaVeilProtected[] = _("{B_DEF_NAME_WITH_PREFIX} is protected\nby an aromatic veil!");
@@ -676,9 +674,114 @@ static const u8 sText_PkmnAbsorbingPower[] = _("{B_ATK_NAME_WITH_PREFIX} is abso
 static const u8 sText_NoOneWillBeAbleToRun[] = _("No one will be able to run away\nduring the next turn!");
 static const u8 sText_DestinyKnotActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} fell in love\nfrom the {B_LAST_ITEM}!");
 static const u8 sText_CloakedInAFreezingLight[] = _("{B_ATK_NAME_WITH_PREFIX} became cloaked\nin a freezing light!");
+static const u8 sText_StatWasNotLowered[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_BUFF1}\nwas not lowered!");
+static const u8 sText_AuraFlaredToLife[] = _("{B_DEF_NAME_WITH_PREFIX}'s aura flared to life!");
+static const u8 sText_AirLockActivates[] = _("The effects of weather\ndisappeared.");
+static const u8 sText_PressureActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} is exerting its\npressure!");
+static const u8 sText_DarkAuraActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} is radiating\na dark aura!");
+static const u8 sText_FairyAuraActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} is radiating\na fairy aura!");
+static const u8 sText_AuraBreakActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} reversed all\nother Pokémon's auras!");
+static const u8 sText_ComatoseActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} is drowsing!");
+static const u8 sText_ScreenCleanerActivates[] = _("All screens on the field were\ncleansed!");
+static const u8 sText_FetchedPokeBall[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} found\na {B_LAST_ITEM}!");
+static const u8 sText_BattlerAbilityRaisedStat[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX}'s {B_SCR_ACTIVE_ABILITY}\nraised its {B_BUFF1}!");
+static const u8 sText_ASandstormKickedUp[] = _("A sandstorm kicked up!");
+static const u8 sText_PkmnsWillPerishIn3Turns[] = _("Both Pokémon will perish\nin three turns!");
+static const u8 sText_AbilityRaisedStatDrastically[] = _("{B_DEF_ABILITY} raised {B_DEF_NAME_WITH_PREFIX}'s\n{B_BUFF1} drastically!");
+static const u8 sText_AsOneEnters[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} has two Abilities!");
+static const u8 sText_CuriousMedicineEnters[] = _("{B_EFF_NAME_WITH_PREFIX}'s\nstat changes were reset!");
+static const u8 sText_CanActFaster[] = _("{B_ATK_NAME_WITH_PREFIX} can act faster,\nthanks to {B_BUFF1}!");
+static const u8 sText_MicleBerryActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} boosted the accuracy of its\nnext move using {B_LAST_ITEM}!");
+static const u8 sText_PkmnShookOffTheTaunt[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} shook off\nthe taunt!");
+static const u8 sText_PkmnGotOverItsInfatuation[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} got over\nits infatuation!");
+static const u8 sText_ItemCannotBeRemoved[] = _("{B_ATK_NAME_WITH_PREFIX}'s item cannot be removed!");
+static const u8 sText_StickyBarbTransfer[] = _("The {B_LAST_ITEM} attached itself to\n{B_ATK_NAME_WITH_PREFIX}!");
+static const u8 sText_PkmnBurnHealed[] = _("{B_DEF_NAME_WITH_PREFIX}'s\nburn was healed.");
+static const u8 sText_RedCardActivate[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} held up its {B_LAST_ITEM}\nagainst {B_ATK_NAME_WITH_PREFIX}!");
+static const u8 sText_EjectButtonActivate[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} is switched\nout with the {B_LAST_ITEM}!");
+static const u8 sText_AttackerGotOverInfatuation[] =_("{B_ATK_NAME_WITH_PREFIX} got over\nits infatuation!");
+static const u8 sText_TormentedNoMore[] = _("{B_ATK_NAME_WITH_PREFIX} is\ntormented no more!");
+static const u8 sText_HealBlockedNoMore[] = _("{B_ATK_NAME_WITH_PREFIX} is cured of\nits heal block!");
+static const u8 sText_AttackerBecameFullyCharged[] = _("{B_ATK_NAME_WITH_PREFIX} became fully charged\ndue to its bond with its trainer!\p");
+static const u8 sText_AttackerBecameAshSpecies[] = _("{B_ATK_NAME_WITH_PREFIX} became Ash-{B_BUFF1}!\p");
+static const u8 sText_ExtremelyHarshSunlight[] = _("The sunlight turned\nextremely harsh!");
+static const u8 sText_ExtremeSunlightFaded[] = _("The extreme sunlight faded.{PAUSE 64}");
+static const u8 sText_MoveEvaporatedInTheHarshSunlight[] = _("The Water-type attack evaporated\nin the harsh sunlight!");
+static const u8 sText_ExtremelyHarshSunlightWasNotLessened[] = _("The extremely harsh sunlight\nwas not lessened at all!");
+static const u8 sText_HeavyRain[] = _("A heavy rain began to fall!");
+static const u8 sText_HeavyRainLifted[] = _("The heavy rain has lifted!{PAUSE 64}");
+static const u8 sText_MoveFizzledOutInTheHeavyRain[] = _("The Fire-type attack fizzled out\nin the heavy rain!");
+static const u8 sText_NoReliefFromHeavyRain[] = _("There is no relief from\nthis heavy rain!");
+static const u8 sText_MysteriousAirCurrent[] = _("A mysterious air current is\nprotecting Flying-type Pokémon!");
+static const u8 sText_StrongWindsDissipated[] = _("The mysterious strong winds\nhave dissipated!{PAUSE 64}");
+static const u8 sText_MysteriousAirCurrentBlowsOn[] = _("The mysterious air current\nblows on regardless!");
+static const u8 sText_AttackWeakenedByStrongWinds[] = _("The mysterious strong winds\nweakened the attack!");
+static const u8 sText_StuffCheeksCantSelect[] = _("Stuff Cheeks cannot be\nselected without a Berry!\p");
+static const u8 sText_PkmnRevertedToPrimal[] = _("{B_ATK_NAME_WITH_PREFIX}'s Primal Reversion!\nIt reverted to its primal form!");
+static const u8 sText_ButPokemonCantUseTheMove[] = _("But {B_ATK_NAME_WITH_PREFIX} can't\nuse the move!");
+static const u8 sText_ButHoopaCantUseIt[] = _("But Hoopa can't use it\nthe way it is now!");
+static const u8 sText_BrokeThroughProtection[] = _("It broke through the\n{B_DEF_NAME_WITH_PREFIX}'s protection!");
+static const u8 sText_AbilityAllowsOnlyMove[] = _("{B_ATK_ABILITY} allows the\nuse of only {B_CURRENT_MOVE}!\p");
+static const u8 sText_SwappedAbilities[] = _("{B_DEF_NAME_WITH_PREFIX} swapped Abilities\nwith its target!");
+static const u8 sText_PastelVeilProtected[] = _("{B_DEF_NAME_WITH_PREFIX} is protected\nby a pastel veil!");
+static const u8 sText_PastelVeilEnters[] = _("{B_DEF_NAME_WITH_PREFIX} was cured\nof its poisoning!");
+static const u8 sText_BattlerTypeChangedTo[] = _("{B_BUFF1}'s type\nchanged to {B_BUFF2}!");
+static const u8 sText_BothCanNoLongerEscape[] = _("Neither Pokémon can run away!");
+static const u8 sText_CantEscapeDueToUsedMove[] = _("{B_ATK_NAME_WITH_PREFIX} can no longer escape\nbecause it used {B_CURRENT_MOVE}!");
+static const u8 sText_PkmnBecameWeakerToFire[] = _("{B_DEF_NAME_WITH_PREFIX} became\nweaker to fire!");
+static const u8 sText_PkmnAboutToBeAttackedByItsItem[] = _("{B_DEF_NAME_WITH_PREFIX} is about\nto be attacked by its {B_BUFF1}!");
+static const u8 sText_CantEscapeBecauseOfCurrentMove[] = _("{B_DEF_NAME_WITH_PREFIX} can no longer escape\nbecause of {B_CURRENT_MOVE}!");
+static const u8 sText_NeutralizingGasEnters[] = _("Neutralizing Gas filled the area!");
+static const u8 sText_NeutralizingGasOver[] = _("The effects of Neutralizing\nGas wore off!");
 
 const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
 {
+    [STRINGID_NEUTRALIZINGGASOVER - 12] = sText_NeutralizingGasOver,
+    [STRINGID_NEUTRALIZINGGASENTERS - 12] = sText_NeutralizingGasEnters,
+    [STRINGID_BATTLERTYPECHANGEDTO - 12] = sText_BattlerTypeChangedTo,
+    [STRINGID_PASTELVEILENTERS - 12] = sText_PastelVeilEnters,
+    [STRINGID_PASTELVEILPROTECTED -12] = sText_PastelVeilProtected,
+    [STRINGID_SWAPPEDABILITIES - 12] = sText_SwappedAbilities,
+    [STRINGID_ABILITYALLOWSONLYMOVE - 12] = sText_AbilityAllowsOnlyMove,
+    [STRINGID_BROKETHROUGHPROTECTION - 12] = sText_BrokeThroughProtection,
+    [STRINGID_BUTPOKEMONCANTUSETHEMOVE - 12] = sText_ButPokemonCantUseTheMove,
+    [STRINGID_BUTHOOPACANTUSEIT - 12] = sText_ButHoopaCantUseIt,
+    [STRINGID_PKMNREVERTEDTOPRIMAL - 12] = sText_PkmnRevertedToPrimal,
+    [STRINGID_STUFFCHEEKSCANTSELECT - 12] = sText_StuffCheeksCantSelect,
+    [STRINGID_ATTACKWEAKENEDBSTRONGWINDS - 12] = sText_AttackWeakenedByStrongWinds,
+    [STRINGID_MYSTERIOUSAIRCURRENTBLOWSON - 12] = sText_MysteriousAirCurrentBlowsOn,
+    [STRINGID_STRONGWINDSDISSIPATED - 12] = sText_StrongWindsDissipated,
+    [STRINGID_MYSTERIOUSAIRCURRENT - 12] = sText_MysteriousAirCurrent,
+    [STRINGID_NORELIEFROMHEAVYRAIN - 12] = sText_NoReliefFromHeavyRain,
+    [STRINGID_MOVEFIZZLEDOUTINTHEHEAVYRAIN - 12] = sText_MoveFizzledOutInTheHeavyRain,
+    [STRINGID_HEAVYRAINLIFTED - 12] = sText_HeavyRainLifted,
+    [STRINGID_HEAVYRAIN - 12] = sText_HeavyRain,
+    [STRINGID_EXTREMELYHARSHSUNLIGHTWASNOTLESSENED - 12] = sText_ExtremelyHarshSunlightWasNotLessened,
+    [STRINGID_MOVEEVAPORATEDINTHEHARSHSUNLIGHT - 12] = sText_MoveEvaporatedInTheHarshSunlight,
+    [STRINGID_EXTREMESUNLIGHTFADED - 12] = sText_ExtremeSunlightFaded,
+    [STRINGID_EXTREMELYHARSHSUNLIGHT - 12] = sText_ExtremelyHarshSunlight,
+    [STRINGID_ATTACKERBECAMEASHSPECIES - 12] = sText_AttackerBecameAshSpecies,
+    [STRINGID_ATTACKERBECAMEFULLYCHARGED - 12] = sText_AttackerBecameFullyCharged,
+    [STRINGID_HEALBLOCKEDNOMORE - 12] = sText_HealBlockedNoMore,
+    [STRINGID_TORMENTEDNOMORE - 12] = sText_TormentedNoMore,
+    [STRINGID_ATKGOTOVERINFATUATION - 12] = sText_AttackerGotOverInfatuation,
+    [STRINGID_EJECTBUTTONACTIVATE - 12] = sText_EjectButtonActivate,
+    [STRINGID_REDCARDACTIVATE - 12] = sText_RedCardActivate,
+    [STRINGID_PKMNBURNHEALED - 12] = sText_PkmnBurnHealed,
+    [STRINGID_STICKYBARBTRANSFER - 12] = sText_StickyBarbTransfer,
+    [STRINGID_ITEMCANNOTBEREMOVED - 12] = sText_ItemCannotBeRemoved,
+    [STRINGID_PKMNGOTOVERITSINFATUATION - 12] = sText_PkmnGotOverItsInfatuation,
+    [STRINGID_PKMNSHOOKOFFTHETAUNT - 12] = sText_PkmnShookOffTheTaunt,
+    [STRINGID_MICLEBERRYACTIVATES - 12] = sText_MicleBerryActivates,
+    [STRINGID_CANACTFASTERTHANKSTO - 12] = sText_CanActFaster,
+    [STRINGID_CURIOUSMEDICINEENTERS - 12] = sText_CuriousMedicineEnters,
+    [STRINGID_ASONEENTERS - 12] = sText_AsOneEnters,
+    [STRINGID_ABILITYRAISEDSTATDRASTICALLY - 12] = sText_AbilityRaisedStatDrastically,
+    [STRINGID_PKMNSWILLPERISHIN3TURNS - 12] = sText_PkmnsWillPerishIn3Turns,
+    [STRINGID_ASANDSTORMKICKEDUP - 12] = sText_ASandstormKickedUp,
+    [STRINGID_BATTLERABILITYRAISEDSTAT - 12] = sText_BattlerAbilityRaisedStat,
+    [STRINGID_FETCHEDPOKEBALL - 12] = sText_FetchedPokeBall,
+    [STRINGID_STATWASNOTLOWERED - 12] = sText_StatWasNotLowered,
     [STRINGID_CLOAKEDINAFREEZINGLIGHT - 12] = sText_CloakedInAFreezingLight,
     [STRINGID_DESTINYKNOTACTIVATES - 12] = sText_DestinyKnotActivates,
     [STRINGID_NOONEWILLBEABLETORUNAWAY - 12] = sText_NoOneWillBeAbleToRun,
@@ -704,7 +807,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_AROMAVEILPROTECTED - 12] = sText_AromaVeilProtected,
     [STRINGID_SWEETVEILPROTECTED - 12] = sText_SweetVeilProtected,
     [STRINGID_FLOWERVEILPROTECTED - 12] = sText_FlowerVeilProtected,
-    [STRINGID_SAFETYGOOGLESPROTECTED - 12] = sText_SafetyGooglesProtected,
+    [STRINGID_SAFETYGOGGLESPROTECTED - 12] = sText_SafetyGogglesProtected,
     [STRINGID_SPECTRALTHIEFSTEAL - 12] = sText_SpectralThiefSteal,
     [STRINGID_BELCHCANTSELECT - 12] = sText_BelchCantUse,
     [STRINGID_TRAINER1LOSETEXT - 12] = sText_Trainer1LoseText,
@@ -818,7 +921,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_PKMNSTORINGENERGY - 12] = sText_PkmnStoringEnergy,
     [STRINGID_PKMNUNLEASHEDENERGY - 12] = sText_PkmnUnleashedEnergy,
     [STRINGID_PKMNFATIGUECONFUSION - 12] = sText_PkmnFatigueConfusion,
-    [STRINGID_PKMNPICKEDUPITEM - 12] = sText_PkmnPickedUpItem,
+    [STRINGID_PLAYERPICKEDUPMONEY - 12] = sText_PlayerPickedUpMoney,
     [STRINGID_PKMNUNAFFECTED - 12] = sText_PkmnUnaffected,
     [STRINGID_PKMNTRANSFORMEDINTO - 12] = sText_PkmnTransformedInto,
     [STRINGID_PKMNMADESUBSTITUTE - 12] = sText_PkmnMadeSubstitute,
@@ -904,14 +1007,14 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_PKMNPREVENTSSTATLOSSWITH - 12] = sText_PkmnPreventsStatLossWith,
     [STRINGID_PKMNHURTSWITH - 12] = sText_PkmnHurtsWith,
     [STRINGID_PKMNTRACED - 12] = sText_PkmnTraced,
-    [STRINGID_STATSHARPLY - 12] = sText_StatSharply,
+    [STRINGID_STATSHARPLY - 12] = gText_StatSharply,
     [STRINGID_STATROSE - 12] = gText_StatRose,
     [STRINGID_STATHARSHLY - 12] = sText_StatHarshly,
     [STRINGID_STATFELL - 12] = sText_StatFell,
-    [STRINGID_PKMNSSTATCHANGED - 12] = sText_PkmnsStatChanged,
-    [STRINGID_PKMNSSTATCHANGED2 - 12] = gText_PkmnsStatChanged2,
-    [STRINGID_PKMNSSTATCHANGED3 - 12] = sText_PkmnsStatChanged3,
-    [STRINGID_PKMNSSTATCHANGED4 - 12] = sText_PkmnsStatChanged4,
+    [STRINGID_ATTACKERSSTATROSE - 12] = sText_AttackersStatRose,
+    [STRINGID_DEFENDERSSTATROSE - 12] = gText_DefendersStatRose,
+    [STRINGID_ATTACKERSSTATFELL - 12] = sText_AttackersStatFell,
+    [STRINGID_DEFENDERSSTATFELL - 12] = sText_DefendersStatFell,
     [STRINGID_CRITICALHIT - 12] = sText_CriticalHit,
     [STRINGID_ONEHITKO - 12] = sText_OneHitKO,
     [STRINGID_123POOF - 12] = sText_123Poof,
@@ -1020,7 +1123,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_SOOTHINGAROMA - 12] = sText_SoothingAroma,
     [STRINGID_ITEMSCANTBEUSEDNOW - 12] = sText_ItemsCantBeUsedNow,
     [STRINGID_FORXCOMMAYZ - 12] = sText_ForXCommaYZ,
-    [STRINGID_USINGXTHEYOFZN - 12] = sText_UsingXTheYOfZN,
+    [STRINGID_USINGITEMSTATOFPKMNROSE - 12] = sText_UsingItemTheStatOfPkmnRose,
     [STRINGID_PKMNUSEDXTOGETPUMPED - 12] = sText_PkmnUsedXToGetPumped,
     [STRINGID_PKMNSXMADEYUSELESS - 12] = sText_PkmnsXMadeYUseless,
     [STRINGID_PKMNTRAPPEDBYSANDTOMB - 12] = sText_PkmnTrappedBySandTomb,
@@ -1104,7 +1207,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_PKMNTWISTEDDIMENSIONS - 12] = sText_PkmnTwistedDimensions,
     [STRINGID_POINTEDSTONESFLOAT - 12] = sText_PointedStonesFloat,
     [STRINGID_CLOAKEDINMYSTICALMOONLIGHT - 12] = sText_CloakedInMysticalMoonlight,
-    [STRINGID_TRAPPERBYSWIRLINGMAGMA - 12] = sText_TrappedBySwirlingMagma,
+    [STRINGID_TRAPPEDBYSWIRLINGMAGMA - 12] = sText_TrappedBySwirlingMagma,
     [STRINGID_VANISHEDINSTANTLY - 12] = sText_VanishedInstantly,
     [STRINGID_PROTECTEDTEAM - 12] = sText_ProtectedTeam,
     [STRINGID_SHAREDITSGUARD - 12] = sText_SharedItsGuard,
@@ -1114,7 +1217,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_HURLEDINTOTHEAIR - 12] = sText_HurledIntoTheAir,
     [STRINGID_HELDITEMSLOSEEFFECTS - 12] = sText_HeldItemsLoseEffects,
     [STRINGID_FELLSTRAIGHTDOWN - 12] = sText_FellStraightDown,
-    [STRINGID_TRANSFORMEDINTOWATERTYPE - 12] = sText_TransformedIntoWaterType,
+    [STRINGID_TARGETCHANGEDTYPE  - 12] = sText_TargetChangedType,
     [STRINGID_PKMNACQUIREDSIMPLE - 12] = sText_PkmnAcquiredSimple,
     [STRINGID_EMPTYSTRING5 - 12] = sText_EmptyString4,
     [STRINGID_KINDOFFER - 12] = sText_KindOffer,
@@ -1146,7 +1249,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_PSYCHICTERRAINENDS - 12] = sText_PsychicTerrainEnds,
     [STRINGID_GRASSYTERRAINENDS - 12] = sText_GrassyTerrainEnds,
     [STRINGID_TARGETABILITYSTATRAISE - 12] = sText_TargetAbilityRaisedStat,
-    [STRINGID_ANGRYPOINTACTIVATES - 12] = sText_AngryPointActivates,
+    [STRINGID_TARGETSSTATWASMAXEDOUT - 12] = sText_TargetsStatWasMaxedOut,
     [STRINGID_ATTACKERABILITYSTATRAISE - 12] = sText_AttackerAbilityRaisedStat,
     [STRINGID_POISONHEALHPUP - 12] = sText_PoisonHealHpUp,
     [STRINGID_BADDREAMSDMG - 12] = sText_BadDreamsDmg,
@@ -1164,7 +1267,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_FRISKACTIVATES - 12] = sText_FriskActivates,
     [STRINGID_UNNERVEENTERS - 12] = sText_UnnerveEnters,
     [STRINGID_HARVESTBERRY - 12] = sText_HarvestBerry,
-    [STRINGID_MOXIEATKRISE - 12] = sText_MoxieAtkRise,
+    [STRINGID_LASTABILITYRAISEDSTAT - 12] = sText_LastAbilityRaisedBuff1,
     [STRINGID_MAGICBOUNCEACTIVATES - 12] = sText_MagicBounceActivates,
     [STRINGID_PROTEANTYPECHANGE - 12] = sText_ProteanTypeChange,
     [STRINGID_SYMBIOSISITEMPASS - 12] = sText_SymbiosisItemPass,
@@ -1198,6 +1301,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_TERRAINBECOMESPSYCHIC - 12] = sText_TerrainBecomesPsychic,
     [STRINGID_TARGETELECTRIFIED - 12] = sText_TargetElectrified,
     [STRINGID_MEGAEVOREACTING - 12] = sText_MegaEvoReacting,
+    [STRINGID_FERVENTWISHREACHED - 12] = sText_FerventWishReached,
     [STRINGID_MEGAEVOEVOLVED - 12] = sText_MegaEvoEvolved,
     [STRINGID_DRASTICALLY - 12] = sText_drastically,
     [STRINGID_SEVERELY - 12] = sText_severely,
@@ -1215,6 +1319,31 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_GRASSYTERRAINHEALS - 12] = sText_GrassyTerrainHeals,
     [STRINGID_ELECTRICTERRAINPREVENTS - 12] = sText_ElectricTerrainPreventsSleep,
     [STRINGID_PSYCHICTERRAINPREVENTS - 12] = sText_PsychicTerrainPreventsPriority,
+    [STRINGID_AURAFLAREDTOLIFE - 12] = sText_AuraFlaredToLife,
+    [STRINGID_AIRLOCKACTIVATES - 12] = sText_AirLockActivates,
+    [STRINGID_PRESSUREENTERS - 12] = sText_PressureActivates,
+    [STRINGID_DARKAURAENTERS - 12] = sText_DarkAuraActivates,
+    [STRINGID_FAIRYAURAENTERS - 12] = sText_FairyAuraActivates,
+    [STRINGID_AURABREAKENTERS - 12] = sText_AuraBreakActivates,
+    [STRINGID_COMATOSEENTERS - 12] = sText_ComatoseActivates,
+    [STRINGID_SCREENCLEANERENTERS - 12] = sText_ScreenCleanerActivates,
+    [STRINGID_BOTHCANNOLONGERESCAPE - 12] = sText_BothCanNoLongerEscape,
+    [STRINGID_CANTESCAPEDUETOUSEDMOVE - 12] = sText_CantEscapeDueToUsedMove,
+    [STRINGID_PKMNBECAMEWEAKERTOFIRE - 12] = sText_PkmnBecameWeakerToFire,
+    [STRINGID_ABOUTTOUSEPOLTERGEIST - 12] = sText_PkmnAboutToBeAttackedByItsItem,
+    [STRINGID_CANTESCAPEBECAUSEOFCURRENTMOVE - 12] = sText_CantEscapeBecauseOfCurrentMove,
+    [STRINGID_PKMNTOOKTARGETHIGH - 12] = sText_PkmnTookTargetHigh,
+    [STRINGID_TARGETTOOHEAVY - 12] = sText_TargetTooHeavy,
+};
+
+const u16 gMentalHerbCureStringIds[] = 
+{
+    [B_MSG_MENTALHERBCURE_INFATUATION] = STRINGID_ATKGOTOVERINFATUATION,
+    [B_MSG_MENTALHERBCURE_TAUNT]       = STRINGID_BUFFERENDS,
+    [B_MSG_MENTALHERBCURE_ENCORE]      = STRINGID_PKMNENCOREENDED,
+    [B_MSG_MENTALHERBCURE_TORMENT]     = STRINGID_TORMENTEDNOMORE,
+    [B_MSG_MENTALHERBCURE_HEALBLOCK]   = STRINGID_HEALBLOCKEDNOMORE,
+    [B_MSG_MENTALHERBCURE_DISABLE]     = STRINGID_PKMNMOVEDISABLEDNOMORE,
 };
 
 const u16 gTerrainStringIds[] =
@@ -1222,9 +1351,16 @@ const u16 gTerrainStringIds[] =
     STRINGID_TERRAINBECOMESMISTY, STRINGID_TERRAINBECOMESGRASSY, STRINGID_TERRAINBECOMESELECTRIC, STRINGID_TERRAINBECOMESPSYCHIC
 };
 
+const u16 gTerrainEndingStringIds[] = 
+{
+    STRINGID_MISTYTERRAINENDS, STRINGID_GRASSYTERRAINENDS, STRINGID_ELECTRICTERRAINENDS, STRINGID_PSYCHICTERRAINENDS
+};
+
 const u16 gTerrainPreventsStringIds[] =
 {
-    STRINGID_MISTYTERRAINPREVENTS, STRINGID_ELECTRICTERRAINPREVENTS, STRINGID_PSYCHICTERRAINPREVENTS
+    [B_MSG_TERRAINPREVENTS_MISTY]    = STRINGID_MISTYTERRAINPREVENTS,
+    [B_MSG_TERRAINPREVENTS_ELECTRIC] = STRINGID_ELECTRICTERRAINPREVENTS,
+    [B_MSG_TERRAINPREVENTS_PSYCHIC]  = STRINGID_PSYCHICTERRAINPREVENTS
 };
 
 const u16 gMagicCoatBounceStringIds[] =
@@ -1244,221 +1380,295 @@ const u16 gDmgHazardsStringIds[] =
 
 const u16 gSwitchInAbilityStringIds[] =
 {
-    STRINGID_MOLDBREAKERENTERS, STRINGID_TERAVOLTENTERS, STRINGID_TURBOBLAZEENTERS,
-    STRINGID_SLOWSTARTENTERS, STRINGID_UNNERVEENTERS, STRINGID_ANTICIPATIONACTIVATES,
-    STRINGID_FOREWARNACTIVATES
+    [B_MSG_SWITCHIN_MOLDBREAKER] = STRINGID_MOLDBREAKERENTERS,
+    [B_MSG_SWITCHIN_TERAVOLT] = STRINGID_TERAVOLTENTERS,
+    [B_MSG_SWITCHIN_TURBOBLAZE] = STRINGID_TURBOBLAZEENTERS,
+    [B_MSG_SWITCHIN_SLOWSTART] = STRINGID_SLOWSTARTENTERS,
+    [B_MSG_SWITCHIN_UNNERVE] = STRINGID_UNNERVEENTERS,
+    [B_MSG_SWITCHIN_ANTICIPATION] = STRINGID_ANTICIPATIONACTIVATES,
+    [B_MSG_SWITCHIN_FOREWARN] = STRINGID_FOREWARNACTIVATES,
+    [B_MSG_SWITCHIN_PRESSURE] = STRINGID_PRESSUREENTERS,
+    [B_MSG_SWITCHIN_DARKAURA] = STRINGID_DARKAURAENTERS,
+    [B_MSG_SWITCHIN_FAIRYAURA] = STRINGID_FAIRYAURAENTERS,
+    [B_MSG_SWITCHIN_AURABREAK] = STRINGID_AURABREAKENTERS,
+    [B_MSG_SWITCHIN_COMATOSE] = STRINGID_COMATOSEENTERS,
+    [B_MSG_SWITCHIN_SCREENCLEANER] = STRINGID_SCREENCLEANERENTERS,
+    [B_MSG_SWITCHIN_ASONE] = STRINGID_ASONEENTERS,
+    [B_MSG_SWITCHIN_CURIOUS_MEDICINE] = STRINGID_CURIOUSMEDICINEENTERS,
+    [B_MSG_SWITCHIN_PASTEL_VEIL] = STRINGID_PASTELVEILENTERS,
+    [B_MSG_SWITCHIN_NEUTRALIZING_GAS] = STRINGID_NEUTRALIZINGGASENTERS,
 };
 
 const u16 gMissStringIds[] =
 {
-    STRINGID_ATTACKMISSED, STRINGID_PKMNPROTECTEDITSELF,
-    STRINGID_PKMNAVOIDEDATTACK, STRINGID_AVOIDEDDAMAGE,
-    STRINGID_PKMNMAKESGROUNDMISS
+    [B_MSG_MISSED]      = STRINGID_ATTACKMISSED,
+    [B_MSG_PROTECTED]   = STRINGID_PKMNPROTECTEDITSELF,
+    [B_MSG_AVOIDED_ATK] = STRINGID_PKMNAVOIDEDATTACK,
+    [B_MSG_AVOIDED_DMG] = STRINGID_AVOIDEDDAMAGE,
+    [B_MSG_GROUND_MISS] = STRINGID_PKMNMAKESGROUNDMISS
 };
 
 const u16 gNoEscapeStringIds[] =
 {
-    STRINGID_CANTESCAPE, STRINGID_DONTLEAVEBIRCH, STRINGID_PREVENTSESCAPE,
-    STRINGID_CANTESCAPE2, STRINGID_ATTACKERCANTESCAPE
+    [B_MSG_CANT_ESCAPE]          = STRINGID_CANTESCAPE,
+    [B_MSG_DONT_LEAVE_BIRCH]     = STRINGID_DONTLEAVEBIRCH,
+    [B_MSG_PREVENTS_ESCAPE]      = STRINGID_PREVENTSESCAPE,
+    [B_MSG_CANT_ESCAPE_2]        = STRINGID_CANTESCAPE2,
+    [B_MSG_ATTACKER_CANT_ESCAPE] = STRINGID_ATTACKERCANTESCAPE
 };
 
 const u16 gMoveWeatherChangeStringIds[] =
 {
-    STRINGID_STARTEDTORAIN, STRINGID_DOWNPOURSTARTED, STRINGID_BUTITFAILED,
-    STRINGID_SANDSTORMBREWED, STRINGID_SUNLIGHTGOTBRIGHT, STRINGID_STARTEDHAIL
+    [B_MSG_STARTED_RAIN]      = STRINGID_STARTEDTORAIN,
+    [B_MSG_STARTED_DOWNPOUR]  = STRINGID_DOWNPOURSTARTED, // Unused
+    [B_MSG_WEATHER_FAILED]    = STRINGID_BUTITFAILED,
+    [B_MSG_STARTED_SANDSTORM] = STRINGID_SANDSTORMBREWED,
+    [B_MSG_STARTED_SUNLIGHT]  = STRINGID_SUNLIGHTGOTBRIGHT,
+    [B_MSG_STARTED_HAIL]      = STRINGID_STARTEDHAIL,
 };
 
 const u16 gSandStormHailContinuesStringIds[] =
 {
-    STRINGID_SANDSTORMRAGES, STRINGID_HAILCONTINUES
+    [B_MSG_SANDSTORM] = STRINGID_SANDSTORMRAGES,
+    [B_MSG_HAIL]      = STRINGID_HAILCONTINUES
 };
 
 const u16 gSandStormHailDmgStringIds[] =
 {
-    STRINGID_PKMNBUFFETEDBYSANDSTORM, STRINGID_PKMNPELTEDBYHAIL
+    [B_MSG_SANDSTORM] = STRINGID_PKMNBUFFETEDBYSANDSTORM,
+    [B_MSG_HAIL]      = STRINGID_PKMNPELTEDBYHAIL
 };
 
 const u16 gSandStormHailEndStringIds[] =
 {
-    STRINGID_SANDSTORMSUBSIDED, STRINGID_HAILSTOPPED
+    [B_MSG_SANDSTORM] = STRINGID_SANDSTORMSUBSIDED,
+    [B_MSG_HAIL]      = STRINGID_HAILSTOPPED
 };
 
 const u16 gRainContinuesStringIds[] =
 {
-    STRINGID_RAINCONTINUES, STRINGID_DOWNPOURCONTINUES, STRINGID_RAINSTOPPED
+    [B_MSG_RAIN_CONTINUES]     = STRINGID_RAINCONTINUES,
+    [B_MSG_DOWNPOUR_CONTINUES] = STRINGID_DOWNPOURCONTINUES,
+    [B_MSG_RAIN_STOPPED]       = STRINGID_RAINSTOPPED
 };
 
 const u16 gProtectLikeUsedStringIds[] =
 {
-    STRINGID_PKMNPROTECTEDITSELF2, STRINGID_PKMNBRACEDITSELF, STRINGID_BUTITFAILED, STRINGID_PROTECTEDTEAM,
+    [B_MSG_PROTECTED_ITSELF] = STRINGID_PKMNPROTECTEDITSELF2,
+    [B_MSG_BRACED_ITSELF]    = STRINGID_PKMNBRACEDITSELF,
+    [B_MSG_PROTECT_FAILED]   = STRINGID_BUTITFAILED,
+    [B_MSG_PROTECTED_TEAM]   = STRINGID_PROTECTEDTEAM,
 };
 
 const u16 gReflectLightScreenSafeguardStringIds[] =
 {
-    STRINGID_BUTITFAILED, STRINGID_PKMNRAISEDDEF, STRINGID_PKMNRAISEDDEFALITTLE,
-    STRINGID_PKMNRAISEDSPDEF, STRINGID_PKMNRAISEDSPDEFALITTLE, STRINGID_PKMNCOVEREDBYVEIL
+    [B_MSG_SIDE_STATUS_FAILED]     = STRINGID_BUTITFAILED,
+    [B_MSG_SET_REFLECT_SINGLE]     = STRINGID_PKMNRAISEDDEF,
+    [B_MSG_SET_REFLECT_DOUBLE]     = STRINGID_PKMNRAISEDDEFALITTLE,
+    [B_MSG_SET_LIGHTSCREEN_SINGLE] = STRINGID_PKMNRAISEDSPDEF,
+    [B_MSG_SET_LIGHTSCREEN_DOUBLE] = STRINGID_PKMNRAISEDSPDEFALITTLE,
+    [B_MSG_SET_SAFEGUARD]          = STRINGID_PKMNCOVEREDBYVEIL,
 };
 
 const u16 gLeechSeedStringIds[] =
 {
-    STRINGID_PKMNSEEDED, STRINGID_PKMNEVADEDATTACK,
-    STRINGID_ITDOESNTAFFECT, STRINGID_PKMNSAPPEDBYLEECHSEED, STRINGID_ITSUCKEDLIQUIDOOZE,
+    [B_MSG_LEECH_SEED_SET]   = STRINGID_PKMNSEEDED,
+    [B_MSG_LEECH_SEED_MISS]  = STRINGID_PKMNEVADEDATTACK,
+    [B_MSG_LEECH_SEED_FAIL]  = STRINGID_ITDOESNTAFFECT,
+    [B_MSG_LEECH_SEED_DRAIN] = STRINGID_PKMNSAPPEDBYLEECHSEED,
+    [B_MSG_LEECH_SEED_OOZE]  = STRINGID_ITSUCKEDLIQUIDOOZE,
 };
 
 const u16 gRestUsedStringIds[] =
 {
-    STRINGID_PKMNWENTTOSLEEP, STRINGID_PKMNSLEPTHEALTHY
+    [B_MSG_REST]          = STRINGID_PKMNWENTTOSLEEP,
+    [B_MSG_REST_STATUSED] = STRINGID_PKMNSLEPTHEALTHY
 };
 
 const u16 gUproarOverTurnStringIds[] =
 {
-    STRINGID_PKMNMAKINGUPROAR, STRINGID_PKMNCALMEDDOWN
+    [B_MSG_UPROAR_CONTINUES] = STRINGID_PKMNMAKINGUPROAR,
+    [B_MSG_UPROAR_ENDS]      = STRINGID_PKMNCALMEDDOWN
 };
 
 const u16 gStockpileUsedStringIds[] =
 {
-    STRINGID_PKMNSTOCKPILED, STRINGID_PKMNCANTSTOCKPILE,
+    [B_MSG_STOCKPILED]     = STRINGID_PKMNSTOCKPILED,
+    [B_MSG_CANT_STOCKPILE] = STRINGID_PKMNCANTSTOCKPILE,
 };
 
 const u16 gWokeUpStringIds[] =
 {
-    STRINGID_PKMNWOKEUP, STRINGID_PKMNWOKEUPINUPROAR
+    [B_MSG_WOKE_UP]        = STRINGID_PKMNWOKEUP,
+    [B_MSG_WOKE_UP_UPROAR] = STRINGID_PKMNWOKEUPINUPROAR
 };
 
 const u16 gSwallowFailStringIds[] =
 {
-    STRINGID_FAILEDTOSWALLOW, STRINGID_PKMNHPFULL
+    [B_MSG_SWALLOW_FAILED]  = STRINGID_FAILEDTOSWALLOW,
+    [B_MSG_SWALLOW_FULL_HP] = STRINGID_PKMNHPFULL
 };
 
 const u16 gUproarAwakeStringIds[] =
 {
-    STRINGID_PKMNCANTSLEEPINUPROAR2, STRINGID_UPROARKEPTPKMNAWAKE, STRINGID_PKMNSTAYEDAWAKEUSING
+    [B_MSG_CANT_SLEEP_UPROAR]  = STRINGID_PKMNCANTSLEEPINUPROAR2,
+    [B_MSG_UPROAR_KEPT_AWAKE]  = STRINGID_UPROARKEPTPKMNAWAKE,
+    [B_MSG_STAYED_AWAKE_USING] = STRINGID_PKMNSTAYEDAWAKEUSING,
 };
 
 const u16 gStatUpStringIds[] =
 {
-    STRINGID_PKMNSSTATCHANGED, STRINGID_PKMNSSTATCHANGED2, STRINGID_STATSWONTINCREASE,
-    STRINGID_EMPTYSTRING3, STRINGID_USINGXTHEYOFZN, STRINGID_PKMNUSEDXTOGETPUMPED
+    [B_MSG_ATTACKER_STAT_ROSE] = STRINGID_ATTACKERSSTATROSE,
+    [B_MSG_DEFENDER_STAT_ROSE] = STRINGID_DEFENDERSSTATROSE,
+    [B_MSG_STAT_WONT_INCREASE] = STRINGID_STATSWONTINCREASE,
+    [B_MSG_STAT_ROSE_EMPTY]    = STRINGID_EMPTYSTRING3,
+    [B_MSG_STAT_ROSE_ITEM]     = STRINGID_USINGITEMSTATOFPKMNROSE,
+    [B_MSG_USED_DIRE_HIT]     = STRINGID_PKMNUSEDXTOGETPUMPED,
 };
 
 const u16 gStatDownStringIds[] =
 {
-    STRINGID_PKMNSSTATCHANGED3, STRINGID_PKMNSSTATCHANGED4, STRINGID_STATSWONTDECREASE, STRINGID_EMPTYSTRING3
+    [B_MSG_ATTACKER_STAT_FELL] = STRINGID_ATTACKERSSTATFELL,
+    [B_MSG_DEFENDER_STAT_FELL] = STRINGID_DEFENDERSSTATFELL,
+    [B_MSG_STAT_WONT_DECREASE] = STRINGID_STATSWONTDECREASE,
+    [B_MSG_STAT_FELL_EMPTY]    = STRINGID_EMPTYSTRING3,
 };
 
 // Index read from sTWOTURN_STRINGID
 const u16 gFirstTurnOfTwoStringIds[] =
 {
-    STRINGID_PKMNWHIPPEDWHIRLWIND,      // MOVE_RAZOR_WIND
-    STRINGID_PKMNTOOKSUNLIGHT,          // MOVE_SOLAR_BEAM
-    STRINGID_PKMNLOWEREDHEAD,           // MOVE_SKULL_BASH
-    STRINGID_PKMNISGLOWING,             // MOVE_SKY_ATTACK
-    STRINGID_PKMNFLEWHIGH,              // MOVE_FLY
-    STRINGID_PKMNDUGHOLE,               // MOVE_DIG
-    STRINGID_PKMNHIDUNDERWATER,         // MOVE_DIVE
-    STRINGID_PKMNSPRANGUP,              // MOVE_BOUNCE
-    STRINGID_VANISHEDINSTANTLY,         // MOVE_PHANTOM_FORCE
-    STRINGID_PKNMABSORBINGPOWER,        // MOVE_GEOMANCY
-    STRINGID_CLOAKEDINAFREEZINGLIGHT,   // MOVE_FREEZE_SHOCK
+    [B_MSG_TURN1_RAZOR_WIND]    = STRINGID_PKMNWHIPPEDWHIRLWIND,
+    [B_MSG_TURN1_SOLAR_BEAM]    = STRINGID_PKMNTOOKSUNLIGHT,
+    [B_MSG_TURN1_SKULL_BASH]    = STRINGID_PKMNLOWEREDHEAD,
+    [B_MSG_TURN1_SKY_ATTACK]    = STRINGID_PKMNISGLOWING,
+    [B_MSG_TURN1_FLY]           = STRINGID_PKMNFLEWHIGH,
+    [B_MSG_TURN1_DIG]           = STRINGID_PKMNDUGHOLE,
+    [B_MSG_TURN1_DIVE]          = STRINGID_PKMNHIDUNDERWATER,
+    [B_MSG_TURN1_BOUNCE]        = STRINGID_PKMNSPRANGUP,
+    [B_MSG_TURN1_PHANTOM_FORCE] = STRINGID_VANISHEDINSTANTLY,
+    [B_MSG_TURN1_GEOMANCY]      = STRINGID_PKNMABSORBINGPOWER,
+    [B_MSG_TURN1_FREEZE_SHOCK]  = STRINGID_CLOAKEDINAFREEZINGLIGHT,
+    [B_MSG_TURN1_SKY_DROP]      = STRINGID_PKMNTOOKTARGETHIGH,
 };
 
-// Index copied from move's index in gTrappingMoves
+// Index copied from move's index in sTrappingMoves
 const u16 gWrappedStringIds[] =
 {
-    STRINGID_PKMNSQUEEZEDBYBIND,   // MOVE_BIND
-    STRINGID_PKMNWRAPPEDBY,        // MOVE_WRAP
-    STRINGID_PKMNTRAPPEDINVORTEX,  // MOVE_FIRE_SPIN
-    STRINGID_PKMNCLAMPED,          // MOVE_CLAMP
-    STRINGID_PKMNTRAPPEDINVORTEX,  // MOVE_WHIRLPOOL
-    STRINGID_PKMNTRAPPEDBYSANDTOMB,// MOVE_SAND_TOMB
-    STRINGID_INFESTATION,          // MOVE_INFESTATION
+    STRINGID_PKMNSQUEEZEDBYBIND,     // MOVE_BIND
+    STRINGID_PKMNWRAPPEDBY,          // MOVE_WRAP
+    STRINGID_PKMNTRAPPEDINVORTEX,    // MOVE_FIRE_SPIN
+    STRINGID_PKMNCLAMPED,            // MOVE_CLAMP
+    STRINGID_PKMNTRAPPEDINVORTEX,    // MOVE_WHIRLPOOL
+    STRINGID_PKMNTRAPPEDBYSANDTOMB,  // MOVE_SAND_TOMB
+    STRINGID_TRAPPEDBYSWIRLINGMAGMA, // MOVE_MAGMA_STORM
+    STRINGID_INFESTATION,            // MOVE_INFESTATION
 };
 
 const u16 gMistUsedStringIds[] =
 {
-    STRINGID_PKMNSHROUDEDINMIST, STRINGID_BUTITFAILED
+    [B_MSG_SET_MIST]    = STRINGID_PKMNSHROUDEDINMIST,
+    [B_MSG_MIST_FAILED] = STRINGID_BUTITFAILED
 };
 
 const u16 gFocusEnergyUsedStringIds[] =
 {
-    STRINGID_PKMNGETTINGPUMPED, STRINGID_BUTITFAILED
+    [B_MSG_GETTING_PUMPED]      = STRINGID_PKMNGETTINGPUMPED,
+    [B_MSG_FOCUS_ENERGY_FAILED] = STRINGID_BUTITFAILED
 };
 
 const u16 gTransformUsedStringIds[] =
 {
-    STRINGID_PKMNTRANSFORMEDINTO, STRINGID_BUTITFAILED
+    [B_MSG_TRANSFORMED]      = STRINGID_PKMNTRANSFORMEDINTO,
+    [B_MSG_TRANSFORM_FAILED] = STRINGID_BUTITFAILED
 };
 
-const u16 gSubsituteUsedStringIds[] =
+const u16 gSubstituteUsedStringIds[] =
 {
-    STRINGID_PKMNMADESUBSTITUTE, STRINGID_TOOWEAKFORSUBSTITUTE
+    [B_MSG_SET_SUBSTITUTE]    = STRINGID_PKMNMADESUBSTITUTE,
+    [B_MSG_SUBSTITUTE_FAILED] = STRINGID_TOOWEAKFORSUBSTITUTE
 };
 
 const u16 gGotPoisonedStringIds[] =
 {
-    STRINGID_PKMNWASPOISONED, STRINGID_PKMNPOISONEDBY
+    [B_MSG_STATUSED]            = STRINGID_PKMNWASPOISONED,
+    [B_MSG_STATUSED_BY_ABILITY] = STRINGID_PKMNPOISONEDBY
 };
 
 const u16 gGotParalyzedStringIds[] =
 {
-    STRINGID_PKMNWASPARALYZED, STRINGID_PKMNWASPARALYZEDBY
+    [B_MSG_STATUSED]            = STRINGID_PKMNWASPARALYZED,
+    [B_MSG_STATUSED_BY_ABILITY] = STRINGID_PKMNWASPARALYZEDBY
 };
 
 const u16 gFellAsleepStringIds[] =
 {
-    STRINGID_PKMNFELLASLEEP, STRINGID_PKMNMADESLEEP,
+    [B_MSG_STATUSED]            = STRINGID_PKMNFELLASLEEP,
+    [B_MSG_STATUSED_BY_ABILITY] = STRINGID_PKMNMADESLEEP,
 };
 
 const u16 gGotBurnedStringIds[] =
 {
-    STRINGID_PKMNWASBURNED, STRINGID_PKMNBURNEDBY
+    [B_MSG_STATUSED]            = STRINGID_PKMNWASBURNED,
+    [B_MSG_STATUSED_BY_ABILITY] = STRINGID_PKMNBURNEDBY
 };
 
 const u16 gGotFrozenStringIds[] =
 {
-    STRINGID_PKMNWASFROZEN, STRINGID_PKMNFROZENBY
+    [B_MSG_STATUSED]            = STRINGID_PKMNWASFROZEN,
+    [B_MSG_STATUSED_BY_ABILITY] = STRINGID_PKMNFROZENBY
 };
 
 const u16 gGotDefrostedStringIds[] =
 {
-    STRINGID_PKMNWASDEFROSTED2, STRINGID_PKMNWASDEFROSTEDBY
+    [B_MSG_DEFROSTED]         = STRINGID_PKMNWASDEFROSTED2,
+    [B_MSG_DEFROSTED_BY_MOVE] = STRINGID_PKMNWASDEFROSTEDBY
 };
 
 const u16 gKOFailedStringIds[] =
 {
-    STRINGID_ATTACKMISSED, STRINGID_PKMNUNAFFECTED
+    [B_MSG_KO_MISS]       = STRINGID_ATTACKMISSED,
+    [B_MSG_KO_UNAFFECTED] = STRINGID_PKMNUNAFFECTED
 };
 
 const u16 gAttractUsedStringIds[] =
 {
-    STRINGID_PKMNFELLINLOVE, STRINGID_PKMNSXINFATUATEDY
+    [B_MSG_STATUSED]            = STRINGID_PKMNFELLINLOVE,
+    [B_MSG_STATUSED_BY_ABILITY] = STRINGID_PKMNSXINFATUATEDY
 };
 
-const u16 gLeechSeedDrainStringIds[] =
+const u16 gAbsorbDrainStringIds[] =
 {
-    STRINGID_PKMNENERGYDRAINED, STRINGID_ITSUCKEDLIQUIDOOZE
+    [B_MSG_ABSORB]      = STRINGID_PKMNENERGYDRAINED,
+    [B_MSG_ABSORB_OOZE] = STRINGID_ITSUCKEDLIQUIDOOZE
 };
 
 const u16 gSportsUsedStringIds[] =
 {
-    STRINGID_ELECTRICITYWEAKENED, STRINGID_FIREWEAKENED
+    [B_MSG_WEAKEN_ELECTRIC] = STRINGID_ELECTRICITYWEAKENED,
+    [B_MSG_WEAKEN_FIRE]     = STRINGID_FIREWEAKENED
 };
 
 const u16 gPartyStatusHealStringIds[] =
 {
-    STRINGID_BELLCHIMED, STRINGID_BELLCHIMED, STRINGID_BELLCHIMED, STRINGID_BELLCHIMED,
-    // interesting how there are four instances of the same string
-    STRINGID_SOOTHINGAROMA
+    [B_MSG_BELL]                     = STRINGID_BELLCHIMED,
+    [B_MSG_BELL_SOUNDPROOF_ATTACKER] = STRINGID_BELLCHIMED,
+    [B_MSG_BELL_SOUNDPROOF_PARTNER]  = STRINGID_BELLCHIMED,
+    [B_MSG_BELL_BOTH_SOUNDPROOF]     = STRINGID_BELLCHIMED,
+    [B_MSG_SOOTHING_AROMA]           = STRINGID_SOOTHINGAROMA
 };
 
 const u16 gFutureMoveUsedStringIds[] =
 {
-    STRINGID_PKMNFORESAWATTACK, STRINGID_PKMNCHOSEXASDESTINY
+    [B_MSG_FUTURE_SIGHT] = STRINGID_PKMNFORESAWATTACK,
+    [B_MSG_DOOM_DESIRE]  = STRINGID_PKMNCHOSEXASDESTINY
 };
 
 const u16 gBallEscapeStringIds[] =
 {
-    STRINGID_PKMNBROKEFREE, STRINGID_ITAPPEAREDCAUGHT, STRINGID_AARGHALMOSTHADIT, STRINGID_SHOOTSOCLOSE
+    [BALL_NO_SHAKES]     = STRINGID_PKMNBROKEFREE,
+    [BALL_1_SHAKE]       = STRINGID_ITAPPEAREDCAUGHT,
+    [BALL_2_SHAKES]      = STRINGID_AARGHALMOSTHADIT,
+    [BALL_3_SHAKES_FAIL] = STRINGID_SHOOTSOCLOSE
 };
 
 // Overworld weathers that don't have an associated battle weather default to "It is raining."
@@ -1484,64 +1694,82 @@ const u16 gWeatherStartsStringIds[] =
 
 const u16 gInobedientStringIds[] =
 {
-    STRINGID_PKMNLOAFING, STRINGID_PKMNWONTOBEY, STRINGID_PKMNTURNEDAWAY,
-    STRINGID_PKMNPRETENDNOTNOTICE, STRINGID_PKMNINCAPABLEOFPOWER
+    [B_MSG_LOAFING]            = STRINGID_PKMNLOAFING,
+    [B_MSG_WONT_OBEY]          = STRINGID_PKMNWONTOBEY,
+    [B_MSG_TURNED_AWAY]        = STRINGID_PKMNTURNEDAWAY,
+    [B_MSG_PRETEND_NOT_NOTICE] = STRINGID_PKMNPRETENDNOTNOTICE,
+    [B_MSG_INCAPABLE_OF_POWER] = STRINGID_PKMNINCAPABLEOFPOWER
 };
 
 const u16 gSafariGetNearStringIds[] =
 {
-    STRINGID_CREPTCLOSER, STRINGID_CANTGETCLOSER
+    [B_MSG_CREPT_CLOSER]    = STRINGID_CREPTCLOSER,
+    [B_MSG_CANT_GET_CLOSER] = STRINGID_CANTGETCLOSER
 };
 
 const u16 gSafariPokeblockResultStringIds[] =
 {
-    STRINGID_PKMNCURIOUSABOUTX, STRINGID_PKMNENTHRALLEDBYX, STRINGID_PKMNIGNOREDX
+    [B_MSG_MON_CURIOUS]    = STRINGID_PKMNCURIOUSABOUTX,
+    [B_MSG_MON_ENTHRALLED] = STRINGID_PKMNENTHRALLEDBYX,
+    [B_MSG_MON_IGNORED]    = STRINGID_PKMNIGNOREDX
 };
 
 const u16 gTrainerItemCuredStatusStringIds[] =
 {
-    STRINGID_PKMNSITEMSNAPPEDOUT, STRINGID_PKMNSITEMCUREDPARALYSIS, STRINGID_PKMNSITEMDEFROSTEDIT,
-    STRINGID_PKMNSITEMHEALEDBURN, STRINGID_PKMNSITEMCUREDPOISON, STRINGID_PKMNSITEMWOKEIT
+    [AI_HEAL_CONFUSION] = STRINGID_PKMNSITEMSNAPPEDOUT,
+    [AI_HEAL_PARALYSIS] = STRINGID_PKMNSITEMCUREDPARALYSIS,
+    [AI_HEAL_FREEZE]    = STRINGID_PKMNSITEMDEFROSTEDIT,
+    [AI_HEAL_BURN]      = STRINGID_PKMNSITEMHEALEDBURN,
+    [AI_HEAL_POISON]    = STRINGID_PKMNSITEMCUREDPOISON,
+    [AI_HEAL_SLEEP]     = STRINGID_PKMNSITEMWOKEIT
 };
 
 const u16 gBerryEffectStringIds[] =
 {
-    STRINGID_PKMNSITEMCUREDPROBLEM, STRINGID_PKMNSITEMNORMALIZEDSTATUS
+    [B_MSG_CURED_PROBLEM]     = STRINGID_PKMNSITEMCUREDPROBLEM,
+    [B_MSG_NORMALIZED_STATUS] = STRINGID_PKMNSITEMNORMALIZEDSTATUS
 };
 
 const u16 gBRNPreventionStringIds[] =
 {
-    STRINGID_PKMNSXPREVENTSBURNS, STRINGID_PKMNSXPREVENTSYSZ, STRINGID_PKMNSXHADNOEFFECTONY
+    [B_MSG_ABILITY_PREVENTS_MOVE_STATUS]    = STRINGID_PKMNSXPREVENTSBURNS,
+    [B_MSG_ABILITY_PREVENTS_ABILITY_STATUS] = STRINGID_PKMNSXPREVENTSYSZ,
+    [B_MSG_STATUS_HAD_NO_EFFECT]            = STRINGID_PKMNSXHADNOEFFECTONY
 };
 
 const u16 gPRLZPreventionStringIds[] =
 {
-    STRINGID_PKMNPREVENTSPARALYSISWITH, STRINGID_PKMNSXPREVENTSYSZ, STRINGID_PKMNSXHADNOEFFECTONY
+    [B_MSG_ABILITY_PREVENTS_MOVE_STATUS]    = STRINGID_PKMNPREVENTSPARALYSISWITH,
+    [B_MSG_ABILITY_PREVENTS_ABILITY_STATUS] = STRINGID_PKMNSXPREVENTSYSZ,
+    [B_MSG_STATUS_HAD_NO_EFFECT]            = STRINGID_PKMNSXHADNOEFFECTONY
 };
 
 const u16 gPSNPreventionStringIds[] =
 {
-    STRINGID_PKMNPREVENTSPOISONINGWITH, STRINGID_PKMNSXPREVENTSYSZ, STRINGID_PKMNSXHADNOEFFECTONY
+    [B_MSG_ABILITY_PREVENTS_MOVE_STATUS]    = STRINGID_PKMNPREVENTSPOISONINGWITH,
+    [B_MSG_ABILITY_PREVENTS_ABILITY_STATUS] = STRINGID_PKMNSXPREVENTSYSZ,
+    [B_MSG_STATUS_HAD_NO_EFFECT]            = STRINGID_PKMNSXHADNOEFFECTONY
 };
 
 const u16 gItemSwapStringIds[] =
 {
-    STRINGID_PKMNOBTAINEDX, STRINGID_PKMNOBTAINEDX2, STRINGID_PKMNOBTAINEDXYOBTAINEDZ
+    [B_MSG_ITEM_SWAP_TAKEN] = STRINGID_PKMNOBTAINEDX,
+    [B_MSG_ITEM_SWAP_GIVEN] = STRINGID_PKMNOBTAINEDX2,
+    [B_MSG_ITEM_SWAP_BOTH]  = STRINGID_PKMNOBTAINEDXYOBTAINEDZ
 };
 
 const u16 gFlashFireStringIds[] =
 {
-    STRINGID_PKMNRAISEDFIREPOWERWITH, STRINGID_PKMNSXMADEYINEFFECTIVE
+    [B_MSG_FLASH_FIRE_BOOST]    = STRINGID_PKMNRAISEDFIREPOWERWITH,
+    [B_MSG_FLASH_FIRE_NO_BOOST] = STRINGID_PKMNSXMADEYINEFFECTIVE
 };
 
 const u16 gCaughtMonStringIds[] =
 {
-    STRINGID_PKMNTRANSFERREDSOMEONESPC, STRINGID_PKMNTRANSFERREDLANETTESPC, STRINGID_PKMNBOXSOMEONESPCFULL, STRINGID_PKMNBOXLANETTESPCFULL,
-};
-
-const u16 gTrappingMoves[] =
-{
-    MOVE_BIND, MOVE_WRAP, MOVE_FIRE_SPIN, MOVE_CLAMP, MOVE_WHIRLPOOL, MOVE_SAND_TOMB, MOVE_INFESTATION, 0xFFFF
+    [B_MSG_SENT_SOMEONES_PC]  = STRINGID_PKMNTRANSFERREDSOMEONESPC,
+    [B_MSG_SENT_LANETTES_PC]  = STRINGID_PKMNTRANSFERREDLANETTESPC,
+    [B_MSG_SOMEONES_BOX_FULL] = STRINGID_PKMNBOXSOMEONESPCFULL,
+    [B_MSG_LANETTES_BOX_FULL] = STRINGID_PKMNBOXLANETTESPCFULL,
 };
 
 const u16 gRoomsStringIds[] =
@@ -1579,14 +1807,15 @@ const u8 gText_BattleSwitchWhich3[] = _("{UP_ARROW}");
 const u8 gText_BattleSwitchWhich4[] = _("{ESCAPE 4}");
 const u8 gText_BattleSwitchWhich5[] = _("-");
 
-const u8 * const gStatNamesTable2[] =
+// Unused
+static const u8 * const sStatNamesTable2[] =
 {
     gText_HP3, gText_SpAtk, gText_Attack,
     gText_SpDef, gText_Defense, gText_Speed
 };
 
-const u8 gText_SafariBalls[] = _("{HIGHLIGHT DARK_GREY}SAFARI BALLS");
-const u8 gText_SafariBallLeft[] = _("{HIGHLIGHT DARK_GREY}Left: $" "{HIGHLIGHT DARK_GREY}");
+const u8 gText_SafariBalls[] = _("{HIGHLIGHT DARK_GRAY}SAFARI BALLS");
+const u8 gText_SafariBallLeft[] = _("{HIGHLIGHT DARK_GRAY}Left: $" "{HIGHLIGHT DARK_GRAY}");
 const u8 gText_Sleep[] = _("sleep");
 const u8 gText_Poison[] = _("poison");
 const u8 gText_Burn[] = _("burn");
@@ -1609,7 +1838,8 @@ const u8 gText_Draw[] = _("{HIGHLIGHT TRANSPARENT}Draw");
 static const u8 sText_SpaceIs[] = _(" is");
 static const u8 sText_ApostropheS[] = _("'s");
 
-static const u8 sATypeMove_Table[][NUMBER_OF_MON_TYPES - 1] =
+// For displaying names of invalid moves
+static const u8 sATypeMove_Table[NUMBER_OF_MON_TYPES][17] =
 {
     [TYPE_NORMAL]   = _("a NORMAL move"),
     [TYPE_FIGHTING] = _("a FIGHTING move"),
@@ -1672,10 +1902,10 @@ static const u8 sText_PkmnEagerForMore[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} is
 
 const u16 gBattlePalaceFlavorTextTable[] =
 {
-    STRINGID_GLINTAPPEARSINEYE,
-    STRINGID_PKMNGETTINGINTOPOSITION,
-    STRINGID_PKMNBEGANGROWLINGDEEPLY,
-    STRINGID_PKMNEAGERFORMORE
+    [B_MSG_GLINT_IN_EYE]   = STRINGID_GLINTAPPEARSINEYE,
+    [B_MSG_GETTING_IN_POS] = STRINGID_PKMNGETTINGINTOPOSITION,
+    [B_MSG_GROWL_DEEPLY]   = STRINGID_PKMNBEGANGROWLINGDEEPLY,
+    [B_MSG_EAGER_FOR_MORE] = STRINGID_PKMNEAGERFORMORE,
 };
 
 static const u8 sText_RefIfNothingIsDecided[] = _("REFEREE: If nothing is decided in\n3 turns, we will go to judging!");
@@ -1683,9 +1913,9 @@ static const u8 sText_RefThatsIt[] = _("REFEREE: That's it! We will now go to\nj
 static const u8 sText_RefJudgeMind[] = _("REFEREE: Judging category 1, Mind!\nThe POKéMON showing the most guts!\p");
 static const u8 sText_RefJudgeSkill[] = _("REFEREE: Judging category 2, Skill!\nThe POKéMON using moves the best!\p");
 static const u8 sText_RefJudgeBody[] = _("REFEREE: Judging category 3, Body!\nThe POKéMON with the most vitality!\p");
-static const u8 sText_RefJudgement1[] = _("REFEREE: Judgment: {B_BUFF1} to {B_BUFF2}!\nThe winner is {B_PLAYER_NAME}'s {B_PLAYER_MON1_NAME}!\p");
-static const u8 sText_RefJudgement2[] = _("REFEREE: Judgment: {B_BUFF1} to {B_BUFF2}!\nThe winner is {B_TRAINER1_NAME}'s {B_OPPONENT_MON1_NAME}!\p");
-static const u8 sText_RefJudgement3[] = _("REFEREE: Judgment: 3 to 3!\nWe have a draw!\p");
+static const u8 sText_RefPlayerWon[] = _("REFEREE: Judgment: {B_BUFF1} to {B_BUFF2}!\nThe winner is {B_PLAYER_NAME}'s {B_PLAYER_MON1_NAME}!\p");
+static const u8 sText_RefOpponentWon[] = _("REFEREE: Judgment: {B_BUFF1} to {B_BUFF2}!\nThe winner is {B_TRAINER1_NAME}'s {B_OPPONENT_MON1_NAME}!\p");
+static const u8 sText_RefDraw[] = _("REFEREE: Judgment: 3 to 3!\nWe have a draw!\p");
 static const u8 sText_DefeatedOpponentByReferee[] = _("{B_PLAYER_MON1_NAME} defeated the opponent\n{B_OPPONENT_MON1_NAME} in a REFEREE's decision!");
 static const u8 sText_LostToOpponentByReferee[] = _("{B_PLAYER_MON1_NAME} lost to the opponent\n{B_OPPONENT_MON1_NAME} in a REFEREE's decision!");
 static const u8 sText_TiedOpponentByReferee[] = _("{B_PLAYER_MON1_NAME} tied the opponent\n{B_OPPONENT_MON1_NAME} in a REFEREE's decision!");
@@ -1693,15 +1923,15 @@ static const u8 sText_RefCommenceBattle[] = _("REFEREE: {B_PLAYER_MON1_NAME} VS 
 
 const u8 * const gRefereeStringsTable[] =
 {
-    sText_RefIfNothingIsDecided,
-    sText_RefThatsIt,
-    sText_RefJudgeMind,
-    sText_RefJudgeSkill,
-    sText_RefJudgeBody,
-    sText_RefJudgement1,
-    sText_RefJudgement2,
-    sText_RefJudgement3,
-    sText_RefCommenceBattle,
+    [B_MSG_REF_NOTHING_IS_DECIDED] = sText_RefIfNothingIsDecided,
+    [B_MSG_REF_THATS_IT]           = sText_RefThatsIt,
+    [B_MSG_REF_JUDGE_MIND]         = sText_RefJudgeMind,
+    [B_MSG_REF_JUDGE_SKILL]        = sText_RefJudgeSkill,
+    [B_MSG_REF_JUDGE_BODY]         = sText_RefJudgeBody,
+    [B_MSG_REF_PLAYER_WON]         = sText_RefPlayerWon,
+    [B_MSG_REF_OPPONENT_WON]       = sText_RefOpponentWon,
+    [B_MSG_REF_DRAW]               = sText_RefDraw,
+    [B_MSG_REF_COMMENCE_BATTLE]    = sText_RefCommenceBattle,
 };
 
 static const u8 sText_QuestionForfeitMatch[] = _("Would you like to forfeit the match\nand quit now?");
@@ -1747,7 +1977,7 @@ static const u16 sGrammarMoveUsedTable[] =
     MOVE_FEATHER_DANCE, MOVE_TEETER_DANCE, MOVE_MUD_SPORT,
     MOVE_FAKE_TEARS, MOVE_WATER_SPORT, MOVE_CALM_MIND, 0,
 
-    MOVE_POUND, MOVE_SCRATCH, MOVE_VICE_GRIP,
+    MOVE_POUND, MOVE_SCRATCH, MOVE_VISE_GRIP,
     MOVE_WING_ATTACK, MOVE_FLY, MOVE_BIND, MOVE_SLAM,
     MOVE_HORN_ATTACK, MOVE_WRAP, MOVE_THRASH, MOVE_TAIL_WHIP,
     MOVE_LEER, MOVE_BITE, MOVE_GROWL, MOVE_ROAR,
@@ -1766,585 +1996,584 @@ static const u8 sDummyWeirdStatusString[] = {EOS, EOS, EOS, EOS, EOS, EOS, EOS, 
 
 static const struct BattleWindowText sTextOnWindowsInfo_Normal[] =
 {
-// The corresponding WindowTemplate is gStandardBattleWindowTemplates[] within src/battle_bg.c
-    { // 0 Standard battle message
+    [B_WIN_MSG] = {
         .fillValue = PIXEL_FILL(0xF),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 1,
-        .fgColor = 1,
-        .bgColor = 15,
-        .shadowColor = 6,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_DYNAMIC_COLOR_6,
+        .shadowColor = TEXT_COLOR_GREEN,
     },
-    { // 1 "What will (pokemon) do?"
+    [B_WIN_ACTION_PROMPT] = {
         .fillValue = PIXEL_FILL(0xF),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 1,
-        .bgColor = 15,
-        .shadowColor = 6,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_DYNAMIC_COLOR_6,
+        .shadowColor = TEXT_COLOR_GREEN,
     },
-    { // 2 "Fight/Pokemon/Bag/Run"
+    [B_WIN_ACTION_MENU] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 3 Top left move
+    [B_WIN_MOVE_NAME_1] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 4 Top right move
+    [B_WIN_MOVE_NAME_2] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 5 Bottom left move
+    [B_WIN_MOVE_NAME_3] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 6 Bottom right move
+    [B_WIN_MOVE_NAME_4] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 7 "PP"
+    [B_WIN_PP] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 12,
-        .bgColor = 14,
-        .shadowColor = 11,
+        .fgColor = TEXT_DYNAMIC_COLOR_3,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_2,
     },
-    { // 8
+    [B_WIN_DUMMY] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 9 PP remaining
+    [B_WIN_PP_REMAINING] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 2,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 12,
-        .bgColor = 14,
-        .shadowColor = 11,
+        .fgColor = TEXT_DYNAMIC_COLOR_3,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_2,
     },
-    { // 10 "type"
+    [B_WIN_MOVE_TYPE] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 11 "switch which?"
+    [B_WIN_SWITCH_PROMPT] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 12 "gText_BattleYesNoChoice"
+    [B_WIN_YESNO] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 13
+    [B_WIN_LEVEL_UP_BOX] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 14
+    [B_WIN_LEVEL_UP_BANNER] = {
         .fillValue = PIXEL_FILL(0),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 32,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 1,
-        .bgColor = 0,
-        .shadowColor = 2,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_COLOR_TRANSPARENT,
+        .shadowColor = TEXT_COLOR_DARK_GRAY,
     },
-    { // 15
+    [B_WIN_VS_PLAYER] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 16
+    [B_WIN_VS_OPPONENT] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 17
+    [B_WIN_VS_MULTI_PLAYER_1] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 18
+    [B_WIN_VS_MULTI_PLAYER_2] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 19
+    [B_WIN_VS_MULTI_PLAYER_3] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 20
+    [B_WIN_VS_MULTI_PLAYER_4] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 21
+    [B_WIN_VS_OUTCOME_DRAW] = {
         .fillValue = PIXEL_FILL(0),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 1,
-        .bgColor = 0,
-        .shadowColor = 6,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_COLOR_TRANSPARENT,
+        .shadowColor = TEXT_COLOR_GREEN,
     },
-    { // 22
+    [B_WIN_VS_OUTCOME_LEFT] = {
         .fillValue = PIXEL_FILL(0),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 1,
-        .bgColor = 0,
-        .shadowColor = 6,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_COLOR_TRANSPARENT,
+        .shadowColor = TEXT_COLOR_GREEN,
     },
-    { // 23
+    [B_WIN_VS_OUTCOME_RIGHT] = {
         .fillValue = PIXEL_FILL(0x0),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 1,
-        .bgColor = 0,
-        .shadowColor = 6,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_COLOR_TRANSPARENT,
+        .shadowColor = TEXT_COLOR_GREEN,
     },
 };
 
 static const struct BattleWindowText sTextOnWindowsInfo_Arena[] =
 {
-    { // 0
+    [B_WIN_MSG] = {
         .fillValue = PIXEL_FILL(0xF),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 1,
-        .fgColor = 1,
-        .bgColor = 15,
-        .shadowColor = 6,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_DYNAMIC_COLOR_6,
+        .shadowColor = TEXT_COLOR_GREEN,
     },
-    { // 1
+    [B_WIN_ACTION_PROMPT] = {
         .fillValue = PIXEL_FILL(0xF),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 1,
-        .bgColor = 15,
-        .shadowColor = 6,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_DYNAMIC_COLOR_6,
+        .shadowColor = TEXT_COLOR_GREEN,
     },
-    { // 2
+    [B_WIN_ACTION_MENU] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 3
+    [B_WIN_MOVE_NAME_1] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 4
+    [B_WIN_MOVE_NAME_2] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 5
+    [B_WIN_MOVE_NAME_3] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 6
+    [B_WIN_MOVE_NAME_4] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 7
+    [B_WIN_PP] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 12,
-        .bgColor = 14,
-        .shadowColor = 11,
+        .fgColor = TEXT_DYNAMIC_COLOR_3,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_2,
     },
-    { // 8
+    [B_WIN_DUMMY] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 9
+    [B_WIN_PP_REMAINING] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 2,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 12,
-        .bgColor = 14,
-        .shadowColor = 11,
+        .fgColor = TEXT_DYNAMIC_COLOR_3,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_2,
     },
-    { // 10
+    [B_WIN_MOVE_TYPE] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 11
+    [B_WIN_SWITCH_PROMPT] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 7,
+        .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 12
+    [B_WIN_YESNO] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 13
+    [B_WIN_LEVEL_UP_BOX] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 14
+    [B_WIN_LEVEL_UP_BANNER] = {
         .fillValue = PIXEL_FILL(0),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 32,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 1,
-        .bgColor = 0,
-        .shadowColor = 2,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_COLOR_TRANSPARENT,
+        .shadowColor = TEXT_COLOR_DARK_GRAY,
     },
-    { // 15
+    [ARENA_WIN_PLAYER_NAME] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 1,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_COLOR_WHITE,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 16
+    [ARENA_WIN_VS] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 17
+    [ARENA_WIN_OPPONENT_NAME] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 18
+    [ARENA_WIN_MIND] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 19
+    [ARENA_WIN_SKILL] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 20
+    [ARENA_WIN_BODY] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 21
+    [ARENA_WIN_JUDGEMENT_TITLE] = {
         .fillValue = PIXEL_FILL(0xE),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = -1,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = TEXT_DYNAMIC_COLOR_4,
+        .bgColor = TEXT_DYNAMIC_COLOR_5,
+        .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
-    { // 22
+    [ARENA_WIN_JUDGEMENT_TEXT] = {
         .fillValue = PIXEL_FILL(0x1),
-        .fontId = 1,
+        .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .letterSpacing = 0,
         .lineSpacing = 0,
         .speed = 1,
-        .fgColor = 2,
-        .bgColor = 1,
-        .shadowColor = 3,
+        .fgColor = TEXT_COLOR_DARK_GRAY,
+        .bgColor = TEXT_COLOR_WHITE,
+        .shadowColor = TEXT_COLOR_LIGHT_GRAY,
     },
 };
 
 static const struct BattleWindowText *const sBattleTextOnWindowsInfo[] =
 {
-    sTextOnWindowsInfo_Normal, sTextOnWindowsInfo_Arena
+    [B_WIN_TYPE_NORMAL] = sTextOnWindowsInfo_Normal,
+    [B_WIN_TYPE_ARENA]  = sTextOnWindowsInfo_Arena
 };
 
 static const u8 sRecordedBattleTextSpeeds[] = {8, 4, 1, 0};
 
-// code
 void BufferStringBattle(u16 stringID)
 {
     s32 i;
@@ -2375,9 +2604,9 @@ void BufferStringBattle(u16 stringID)
     case STRINGID_INTROMSG: // first battle msg
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
-            if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_x2000000))
+            if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
             {
-                if (gBattleTypeFlags & BATTLE_TYPE_x800000)
+                if (gBattleTypeFlags & BATTLE_TYPE_TOWER_LINK_MULTI)
                 {
                     stringPtr = sText_TwoTrainersWantToBattle;
                 }
@@ -2413,8 +2642,8 @@ void BufferStringBattle(u16 stringID)
         else
         {
             if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY)
-                stringPtr = sText_WildPkmnAppeared2;
-            else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) // interesting, looks like they had something planned for wild double battles
+                stringPtr = sText_LegendaryPkmnAppeared;
+            else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[gActiveBattler ^ BIT_FLANK]])) // interesting, looks like they had something planned for wild double battles
                 stringPtr = sText_TwoWildPkmnAppeared;
             else if (gBattleTypeFlags & BATTLE_TYPE_WALLY_TUTORIAL)
                 stringPtr = sText_WildPkmnAppearedPause;
@@ -2425,7 +2654,7 @@ void BufferStringBattle(u16 stringID)
     case STRINGID_INTROSENDOUT: // poke first send-out
         if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler ^ BIT_FLANK]]))
             {
                 if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
                     stringPtr = sText_InGamePartnerSentOutZGoN;
@@ -2443,24 +2672,24 @@ void BufferStringBattle(u16 stringID)
         }
         else
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[gActiveBattler ^ BIT_FLANK]]))
             {
                 if (BATTLE_TWO_VS_ONE_OPPONENT)
                     stringPtr = sText_Trainer1SentOutTwoPkmn;
                 else if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
                     stringPtr = sText_TwoTrainersSentPkmn;
-                else if (gBattleTypeFlags & BATTLE_TYPE_x800000)
+                else if (gBattleTypeFlags & BATTLE_TYPE_TOWER_LINK_MULTI)
                     stringPtr = sText_TwoTrainersSentPkmn;
                 else if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
                     stringPtr = sText_TwoLinkTrainersSentOutPkmn;
-                else if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_x2000000))
+                else if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
                     stringPtr = sText_LinkTrainerSentOutTwoPkmn;
                 else
                     stringPtr = sText_Trainer1SentOutTwoPkmn;
             }
             else
             {
-                if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_x2000000)))
+                if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK)))
                     stringPtr = sText_Trainer1SentOutPkmn;
                 else if (gTrainerBattleOpponent_A == TRAINER_UNION_ROOM)
                     stringPtr = sText_Trainer1SentOutPkmn;
@@ -2483,7 +2712,7 @@ void BufferStringBattle(u16 stringID)
         }
         else
         {
-            if (gTrainerBattleOpponent_A == TRAINER_LINK_OPPONENT || gBattleTypeFlags & BATTLE_TYPE_x2000000)
+            if (gTrainerBattleOpponent_A == TRAINER_LINK_OPPONENT || gBattleTypeFlags & BATTLE_TYPE_RECORDED_LINK)
             {
                 if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
                     stringPtr = sText_LinkTrainer2WithdrewPkmn;
@@ -2510,9 +2739,9 @@ void BufferStringBattle(u16 stringID)
         }
         else
         {
-            if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_x2000000))
+            if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
             {
-                if (gBattleTypeFlags & BATTLE_TYPE_x800000)
+                if (gBattleTypeFlags & BATTLE_TYPE_TOWER_LINK_MULTI)
                 {
                     if (gBattleScripting.battler == 1)
                         stringPtr = sText_Trainer1SentOutPkmn2;
@@ -2577,7 +2806,7 @@ void BufferStringBattle(u16 stringID)
                 switch (gBattleTextBuff1[0])
                 {
                 case B_OUTCOME_WON:
-                    if (gBattleTypeFlags & BATTLE_TYPE_x800000)
+                    if (gBattleTypeFlags & BATTLE_TYPE_TOWER_LINK_MULTI)
                         stringPtr = sText_TwoInGameTrainersDefeated;
                     else
                         stringPtr = sText_TwoLinkTrainersDefeated;
@@ -2658,8 +2887,7 @@ static const u8* TryGetStatusString(u8 *src)
     statusPtr = status;
     for (i = 0; i < 8; i++)
     {
-        if (*src == EOS)
-            break;
+        if (*src == EOS) break; // one line required to match -g
         *statusPtr = *src;
         src++;
         statusPtr++;
@@ -2690,7 +2918,7 @@ static void GetBattlerNick(u32 battlerId, u8 *dst)
     if (illusionMon != NULL)
         mon = illusionMon;
     GetMonData(mon, MON_DATA_NICKNAME, dst);
-    StringGetEnd10(dst);
+    StringGet_Nickname(dst);
 }
 
 #define HANDLE_NICKNAME_STRING_CASE(battlerId)                          \
@@ -2852,8 +3080,8 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
     u8 multiplayerId;
     s32 i;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_x2000000)
-        multiplayerId = gUnknown_0203C7B4;
+    if (gBattleTypeFlags & BATTLE_TYPE_RECORDED_LINK)
+        multiplayerId = gRecordedBattleMultiplayerId;
     else
         multiplayerId = GetMultiplayerId();
 
@@ -2962,7 +3190,7 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                     GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_NICKNAME, text);
                 else
                     GetMonData(&gEnemyParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_NICKNAME, text);
-                StringGetEnd10(text);
+                StringGet_Nickname(text);
                 toCpy = text;
                 break;
             case B_TXT_EFF_NAME_WITH_PREFIX: // effect battlerId name with prefix
@@ -2987,9 +3215,9 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                     toCpy = gMoveNames[gBattleMsgDataPtr->originallyUsedMove];
                 break;
             case B_TXT_LAST_ITEM: // last used item
-                if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_x2000000))
+                if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
                 {
-                    if (gLastUsedItem == ITEM_ENIGMA_BERRY)
+                    if (gLastUsedItem == ITEM_ENIGMA_BERRY_E_READER)
                     {
                         if (!(gBattleTypeFlags & BATTLE_TYPE_MULTI))
                         {
@@ -3115,7 +3343,7 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 {
                     GetMonData(&gPlayerParty[gBattleStruct->field_52], MON_DATA_NICKNAME, text);
                 }
-                StringGetEnd10(text);
+                StringGet_Nickname(text);
                 toCpy = text;
                 break;
             case B_TXT_PC_CREATOR_NAME: // lanette pc
@@ -3366,7 +3594,7 @@ static void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
 
                 GetMonData(&gEnemyParty[src[srcID + 2]], MON_DATA_NICKNAME, text);
             }
-            StringGetEnd10(text);
+            StringGet_Nickname(text);
             StringAppend(dst, text);
             srcID += 3;
             break;
@@ -3387,7 +3615,7 @@ static void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
             {
                 gBattleScripting.illusionNickHack = 0;
                 IllusionNickHack(src[srcID + 1], src[srcID + 2], dst);
-                StringGetEnd10(dst);
+                StringGet_Nickname(dst);
             }
             else
             {
@@ -3395,7 +3623,7 @@ static void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
                     GetMonData(&gPlayerParty[src[srcID + 2]], MON_DATA_NICKNAME, dst);
                 else
                     GetMonData(&gEnemyParty[src[srcID + 2]], MON_DATA_NICKNAME, dst);
-                StringGetEnd10(dst);
+                StringGet_Nickname(dst);
             }
             srcID += 3;
             break;
@@ -3404,14 +3632,14 @@ static void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
             srcID += 2;
             break;
         case B_BUFF_ABILITY: // ability names
-            StringAppend(dst, gAbilityNames[src[srcID + 1]]);
-            srcID += 2;
+            StringAppend(dst, gAbilityNames[T1_READ_16(&src[srcID + 1])]);
+            srcID += 3;
             break;
         case B_BUFF_ITEM: // item name
             hword = T1_READ_16(&src[srcID + 1]);
-            if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_x2000000))
+            if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
             {
-                if (hword == ITEM_ENIGMA_BERRY)
+                if (hword == ITEM_ENIGMA_BERRY_E_READER)
                 {
                     if (gLinkPlayers[gBattleScripting.multiplayerId].id == gPotentialItemEffectBattler)
                     {
@@ -3525,9 +3753,9 @@ void BattlePutTextOnWindow(const u8 *text, u8 windowId)
     struct TextPrinterTemplate printerTemplate;
     u8 speed;
 
-    if (windowId & 0x80)
+    if (windowId & B_WIN_COPYTOVRAM)
     {
-        windowId &= ~(0x80);
+        windowId &= ~B_WIN_COPYTOVRAM;
         copyToVram = FALSE;
     }
     else
@@ -3545,31 +3773,31 @@ void BattlePutTextOnWindow(const u8 *text, u8 windowId)
     printerTemplate.currentY = printerTemplate.y;
     printerTemplate.letterSpacing = textInfo[windowId].letterSpacing;
     printerTemplate.lineSpacing = textInfo[windowId].lineSpacing;
-    printerTemplate.style = 0;
+    printerTemplate.unk = 0;
     printerTemplate.fgColor = textInfo[windowId].fgColor;
     printerTemplate.bgColor = textInfo[windowId].bgColor;
     printerTemplate.shadowColor = textInfo[windowId].shadowColor;
 
     if (printerTemplate.x == 0xFF)
     {
-        u32 width = sub_80397C4(gBattleScripting.windowsType, windowId);
+        u32 width = GetBattleWindowTemplatePixelWidth(gBattleScripting.windowsType, windowId);
         s32 alignX = GetStringCenterAlignXOffsetWithLetterSpacing(printerTemplate.fontId, printerTemplate.currentChar, width, printerTemplate.letterSpacing);
         printerTemplate.x = printerTemplate.currentX = alignX;
     }
 
-    if (windowId == 0x16)
-        gTextFlags.useAlternateDownArrow = 0;
+    if (windowId == ARENA_WIN_JUDGEMENT_TEXT)
+        gTextFlags.useAlternateDownArrow = FALSE;
     else
-        gTextFlags.useAlternateDownArrow = 1;
+        gTextFlags.useAlternateDownArrow = TRUE;
 
     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED))
-        gTextFlags.autoScroll = 1;
+        gTextFlags.autoScroll = TRUE;
     else
-        gTextFlags.autoScroll = 0;
+        gTextFlags.autoScroll = FALSE;
 
-    if (windowId == 0 || windowId == 0x16)
+    if (windowId == B_WIN_MSG || windowId == ARENA_WIN_JUDGEMENT_TEXT)
     {
-        if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_x2000000))
+        if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
             speed = 1;
         else if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
             speed = sRecordedBattleTextSpeeds[GetTextSpeedInRecordedBattle()];
@@ -3589,14 +3817,14 @@ void BattlePutTextOnWindow(const u8 *text, u8 windowId)
     if (copyToVram)
     {
         PutWindowTilemap(windowId);
-        CopyWindowToVram(windowId, 3);
+        CopyWindowToVram(windowId, COPYWIN_FULL);
     }
 }
 
 void SetPpNumbersPaletteInMoveSelection(void)
 {
     struct ChooseMoveStruct *chooseMoveStruct = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[gActiveBattler][4]);
-    const u16 *palPtr = gUnknown_08D85620;
+    const u16 *palPtr = gPPTextPalette;
     u8 var = GetCurrentPpToMaxPpState(chooseMoveStruct->currentPp[gMoveSelectionCursor[gActiveBattler]],
                          chooseMoveStruct->maxPp[gMoveSelectionCursor[gActiveBattler]]);
 
