@@ -4454,10 +4454,10 @@
     {
       "id": "LAYOUT_CRATERCREST_TOWN",
       "name": "CratercrestTown_Layout",
-      "width": 25,
+      "width": 31,
       "height": 25,
       "primary_tileset": "gTileset_General",
-      "secondary_tileset": "gTileset_Petalburg",
+      "secondary_tileset": "gTileset_Lavaridge",
       "border_filepath": "data/layouts/CratercrestTown/border.bin",
       "blockdata_filepath": "data/layouts/CratercrestTown/map.bin"
     }
