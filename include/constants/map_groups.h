@@ -1,10 +1,6 @@
 #ifndef GUARD_CONSTANTS_MAP_GROUPS_H
 #define GUARD_CONSTANTS_MAP_GROUPS_H
 
-//
-// DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/map_groups.json
-//
-
 // gMapGroup_TownsAndRoutes
 #define MAP_PETALBURG_CITY      (0 | (0 << 8))
 #define MAP_SLATEPORT_CITY      (1 | (0 << 8))
@@ -405,6 +401,7 @@
 #define MAP_MT_METEOR_2F_1R                          (109 | (24 << 8))
 #define MAP_MT_METEOR_1F_2R                          (110 | (24 << 8))
 #define MAP_MT_METEOR_2F_2R                          (111 | (24 << 8))
+#define MAP_METEOR_PEAK                              (112 | (24 << 8))
 
 // gMapGroup_IndoorDynamic
 #define MAP_SECRET_BASE_RED_CAVE1    (0 | (25 << 8))

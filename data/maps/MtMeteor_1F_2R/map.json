@@ -3,7 +3,7 @@
   "name": "MtMeteor_1F_2R",
   "layout": "LAYOUT_MT_METEOR_1F_2R",
   "music": "MUS_CAVE_OF_ORIGIN",
-  "region_map_section": "MAPSEC_NONE",
+  "region_map_section": "MAPSEC_MT_METEOR",
   "requires_flash": true,
   "weather": "WEATHER_NONE",
   "map_type": "MAP_TYPE_UNDERGROUND",

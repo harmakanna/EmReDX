@@ -1066,3 +1066,5 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/maps/MtMeteor_2F_2R/scripts.inc"
 
 	.include "data/maps/CratercrestTown/scripts.inc"
+
+	.include "data/maps/MeteorPeak/scripts.inc"

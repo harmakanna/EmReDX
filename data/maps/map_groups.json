@@ -435,7 +435,8 @@
     "MtMeteor_1F_1R",
     "MtMeteor_2F_1R",
     "MtMeteor_1F_2R",
-    "MtMeteor_2F_2R"
+    "MtMeteor_2F_2R",
+    "MeteorPeak"
   ],
   "gMapGroup_IndoorDynamic": [
     "SecretBase_RedCave1",

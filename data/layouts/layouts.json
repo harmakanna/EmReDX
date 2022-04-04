@@ -4460,6 +4460,16 @@
       "secondary_tileset": "gTileset_Lavaridge",
       "border_filepath": "data/layouts/CratercrestTown/border.bin",
       "blockdata_filepath": "data/layouts/CratercrestTown/map.bin"
+    },
+    {
+      "id": "LAYOUT_METEOR_PEAK",
+      "name": "MeteorPeak_Layout",
+      "width": 45,
+      "height": 60,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Fortree",
+      "border_filepath": "data/layouts/MeteorPeak/border.bin",
+      "blockdata_filepath": "data/layouts/MeteorPeak/map.bin"
     }
   ]
 }
