@@ -1,0 +1,35 @@
+Cratercrest
+	Unique ground tiles
+		-fertile ground or snowy ground? between snowy peak and volcano so idk
+		-make sure pokemon center supports top/sides
+		-
+	Unique house tiles
+		-White stone building + red shingled roof
+			-Left side of building
+			-Right side of building
+			-Center of building
+			-Window tiles
+		-Portugal mtn village as reference
+	Craters
+		-A la Fallarbor
+		-Meteorite rock tiles (for deoxys?)
+	Other
+		-Unique signpost for new terrain
+Mtn Peak
+	Unique ground tiles
+		-Tall grass on rocky mountain
+		-Tall grass on snow
+		-Long grass on snow?
+		-Snowy ground
+		-Snowy paths
+			-Footprints of other explorers?
+	Horizontal bridge tiles
+		-Going over rock sloped terrain
+		-Going over grass
+	Temple
+		-Use anime snowpoint temple as reference
+		-Full thing might not be visible at some points, so a full temple might not be needed
+	Unique trees
+		-Trees with snowy tops on snowy terrain
+		-Trees with snowy tops on rocky terrain
+	
