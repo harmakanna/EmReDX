@@ -139,6 +139,8 @@ extern struct Weather gWeather;
 extern struct Weather *const gWeatherPtr;
 extern const u16 gFogPalette[];
 
+//NEW for Dynamic Overworld Palette System
+
 enum
 {
     GAMMA_NONE,
@@ -161,8 +163,8 @@ void FadeScreen(u8 mode, s8 delay);
 bool8 IsWeatherNotFadingIn(void);
 void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex);
 void ApplyWeatherGammaShiftToPal(u8 paletteIndex);
-u8 sub_80ABF20(void);
-void LoadCustomWeatherSpritePalette(const struct SpritePalette *palette);
+void LoadCustomWeatherSpritePalette(const struct SpritePalette *palette); //NEW for Dynamic Overworld Palette System
+//u8 sub_80ABF20(void);
 void ResetDroughtWeatherPaletteLoading(void);
 bool8 LoadDroughtWeatherPalettes(void);
 void DroughtStateInit(void);
