@@ -942,7 +942,7 @@ static void CB2_HandleStartBattle(void)
             // Recv Pokémon 5-6
             ResetBlockReceivedFlags();
             memcpy(&gEnemyParty[4], gBlockRecvBuffer[enemyMultiplayerId], sizeof(struct Pokemon) * 2);
-            
+
             TryCorrectShedinjaLanguage(&gEnemyParty[0]);
             TryCorrectShedinjaLanguage(&gEnemyParty[1]);
             TryCorrectShedinjaLanguage(&gEnemyParty[2]);
@@ -1882,9 +1882,28 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
                     nameHash += gSpeciesNames[partyData[i].species][j];
 
-                personalityValue += nameHash << 8;
+                do
+                {
+                  personalityValue = Random32();
+                } while(partyData[i].nature != GetNatureFromPersonality(personalityValue));
+                //personalityValue += nameHash << 8; Old way that nature is determined
+
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                CreateMon(&party[i],
+                          partyData[i].species,
+                          partyData[i].lvl,
+                          fixedIV,
+                          TRUE,
+                          personalityValue,
+                          OT_ID_RANDOM_NO_SHINY, 0);
+
+                SetMonData(&party[i], MON_DATA_ABILITY_NUM, &partyData[i].ability);
+
+                for (j = 0; j < NUM_STATS; j++)
+                {
+                  SetMonData(&party[i], MON_DATA_HP_EV + j, &partyData[i].evs[j]);
+                }
+                CalculateMonStats(&party[i]);
 
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
@@ -1914,11 +1933,24 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
                     nameHash += gSpeciesNames[partyData[i].species][j];
 
-                personalityValue += nameHash << 8;
+                do
+                {
+                  personalityValue = Random32();
+                } while(partyData[i].nature != GetNatureFromPersonality(personalityValue));
+
+                //personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
                 CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
 
+                SetMonData(&party[i], MON_DATA_ABILITY_NUM, &partyData[i].ability);
+
                 SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
+
+                for (j = 0; j < NUM_STATS; j++)
+                {
+                  SetMonData(&party[i], MON_DATA_HP_EV + j, &partyData[i].evs[j]);
+                }
+                CalculateMonStats(&party[i]);
 
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
@@ -2846,7 +2878,7 @@ static void SpriteCB_TrainerThrowObject_Main(struct Sprite *sprite)
         sprite->callback = SpriteCB_Idle;
 }
 
-// Sprite callback for a trainer back pic to throw an object 
+// Sprite callback for a trainer back pic to throw an object
 // (Wally throwing a ball, throwing Pokéblocks/balls in the Safari Zone)
 void SpriteCB_TrainerThrowObject(struct Sprite *sprite)
 {
@@ -2981,10 +3013,10 @@ static void BattleStartClearSetData(void)
     gBattleStruct->arenaLostOpponentMons = 0;
 
     gBattleStruct->mega.triggerSpriteId = 0xFF;
-    
+
     gBattleStruct->stickyWebUser = 0xFF;
     gBattleStruct->appearedInBattle = 0;
-    
+
     for (i = 0; i < PARTY_SIZE; i++)
     {
         gBattleStruct->usedHeldItems[i][0] = 0;
@@ -3083,7 +3115,7 @@ void SwitchInClearSetData(void)
     gBattleStruct->lastTakenMoveFrom[gActiveBattler][3] = 0;
     gBattleStruct->lastMoveFailed &= ~(gBitTable[gActiveBattler]);
     gBattleStruct->palaceFlags &= ~(gBitTable[gActiveBattler]);
-    
+
     if (gActiveBattler == gBattleStruct->stickyWebUser)
         gBattleStruct->stickyWebUser = 0xFF;    // Switched into sticky web user slot so reset it
 
@@ -3099,7 +3131,7 @@ void SwitchInClearSetData(void)
     gBattleResources->flags->flags[gActiveBattler] = 0;
     gCurrentMove = 0;
     gBattleStruct->arenaTurnCounter = 0xFF;
-    
+
     // Reset damage to prevent things like red card activating if the switched-in mon is holding it
     gSpecialStatuses[gActiveBattler].physicalDmg = 0;
     gSpecialStatuses[gActiveBattler].specialDmg = 0;
@@ -3183,7 +3215,7 @@ void FaintClearSetData(void)
     gBattleStruct->lastTakenMoveFrom[gActiveBattler][3] = 0;
 
     gBattleStruct->palaceFlags &= ~(gBitTable[gActiveBattler]);
-    
+
     if (gActiveBattler == gBattleStruct->stickyWebUser)
         gBattleStruct->stickyWebUser = 0xFF;    // User of sticky web fainted, so reset the stored battler ID
 
@@ -4546,7 +4578,7 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
         // QUICK CLAW / CUSTAP - always first
         // LAGGING TAIL - always last
         // STALL - always last
-        
+
         if (gProtectStructs[battler1].quickDraw && !gProtectStructs[battler2].quickDraw)
             strikesFirst = 0;
         else if (!gProtectStructs[battler1].quickDraw && gProtectStructs[battler2].quickDraw)

@@ -7569,6 +7569,24 @@ static const union AnimCmd sAnim_ORICORIO_1[] =
     ANIMCMD_END,
 };
 
+static const union AnimCmd sAnim_ORICORIO_POM_POM_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_ORICORIO_PAU_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_ORICORIO_SENSU_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
 static const union AnimCmd sAnim_CUTIEFLY_1[] =
 {
     ANIMCMD_FRAME(0, 1),
@@ -15416,6 +15434,9 @@ const union AnimCmd *const *const gMonFrontAnimsPtrTable[] =
     ANIM_CMD(CRABRAWLER),
     ANIM_CMD(CRABOMINABLE),
     ANIM_CMD(ORICORIO),
+    ANIM_CMD(ORICORIO_POM_POM),
+    ANIM_CMD(ORICORIO_PAU),
+    ANIM_CMD(ORICORIO_SENSU),
     ANIM_CMD(CUTIEFLY),
     ANIM_CMD(RIBOMBEE),
     ANIM_CMD(ROCKRUFF),

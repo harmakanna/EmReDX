@@ -3714,6 +3714,21 @@ const struct MonCoords gMonFrontPicCoords[] =
         .size = MON_COORDS_SIZE(56, 64),
         .y_offset = 2,
     },
+    [SPECIES_ORICORIO_POM_POM] =
+    {
+        .size = 0x45,
+        .y_offset = 2,
+    },
+    [SPECIES_ORICORIO_PAU] =
+    {
+        .size = 0x45,
+        .y_offset = 2,
+    },
+    [SPECIES_ORICORIO_SENSU] =
+    {
+        .size = 0x45,
+        .y_offset = 2,
+    },
     [SPECIES_CUTIEFLY] =
     {
         .size = MON_COORDS_SIZE(40, 40),

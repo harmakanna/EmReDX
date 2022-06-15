@@ -19,6 +19,13 @@
 
 #define DROUGHT_COLOR_INDEX(color) ((((color) >> 1) & 0xF) | (((color) >> 2) & 0xF0) | (((color) >> 3) & 0xF00))
 
+/*enum
+{
+    GAMMA_NONE,
+    GAMMA_NORMAL,
+    GAMMA_ALT,
+};*/
+
 struct RGBColor
 {
     u16 r:5;
@@ -857,6 +864,8 @@ void LoadCustomWeatherSpritePalette(const struct SpritePalette *palette)
 {
     LoadSpritePalette(palette);
     UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag));
+    //LoadPalette(palette, 0x100 + gWeatherPtr->weatherPicSpritePalIndex * 16, 32);
+    //UpdateSpritePaletteWithWeather(gWeatherPtr->weatherPicSpritePalIndex);
 }
 
 static void LoadDroughtWeatherPalette(u8 *gammaIndexPtr, u8 *a1)

@@ -1660,6 +1660,7 @@ static void CreateAshSprites(void)
     if (!gWeatherPtr->ashSpritesCreated)
     {
         LoadCustomWeatherSpritePalette(&sFogSpritePalette);
+        //LoadCustomWeatherSpritePalette(&sSpritePalette_Weather0);
         for (i = 0; i < NUM_ASH_SPRITES; i++)
         {
             spriteId = CreateSpriteAtEnd(&sAshSpriteTemplate, 0, 0, 0x4E);
@@ -1879,6 +1880,7 @@ static void CreateFogDiagonalSprites(void)
         fogDiagonalSpriteSheet = gFogDiagonalSpriteSheet;
         LoadSpriteSheet(&fogDiagonalSpriteSheet);
         LoadCustomWeatherSpritePalette(&sFogSpritePalette);
+        //LoadCustomWeatherSpritePalette(&sSpritePalette_Weather0);
         for (i = 0; i < NUM_FOG_DIAGONAL_SPRITES; i++)
         {
             spriteId = CreateSpriteAtEnd(&sFogDiagonalSpriteTemplate, 0, (i / 5) * 64, 0xFF);

@@ -41,19 +41,19 @@
 #define FLAG_TEMP_1F     (TEMP_FLAGS_START + 0x1F)
 #define TEMP_FLAGS_END   FLAG_TEMP_1F
 
-#define FLAG_UNUSED_0x020    0x20 // Unused Flag
-#define FLAG_UNUSED_0x021    0x21 // Unused Flag
-#define FLAG_UNUSED_0x022    0x22 // Unused Flag
-#define FLAG_UNUSED_0x023    0x23 // Unused Flag
-#define FLAG_UNUSED_0x024    0x24 // Unused Flag
-#define FLAG_UNUSED_0x025    0x25 // Unused Flag
-#define FLAG_UNUSED_0x026    0x26 // Unused Flag
-#define FLAG_UNUSED_0x027    0x27 // Unused Flag
-#define FLAG_UNUSED_0x028    0x28 // Unused Flag
-#define FLAG_UNUSED_0x029    0x29 // Unused Flag
-#define FLAG_UNUSED_0x02A    0x2A // Unused Flag
-#define FLAG_UNUSED_0x02B    0x2B // Unused Flag
-#define FLAG_UNUSED_0x02C    0x2C // Unused Flag
+#define FLAG_DEFEATED_ELITE_4_SIDNEY                                0x20
+#define FLAG_DEFEATED_ELITE_4_PHOEBE                                0x21
+#define FLAG_DEFEATED_ELITE_4_GLACIA                                0x22
+#define FLAG_DEFEATED_ELITE_4_DRAKE                                 0x23
+#define FLAG_DEFEATED_RUSTBORO_GYM                                  0x24
+#define FLAG_DEFEATED_DEWFORD_GYM                                   0x25
+#define FLAG_DEFEATED_MAUVILLE_GYM                                  0x26
+#define FLAG_DEFEATED_LAVARIDGE_GYM                                 0x27
+#define FLAG_DEFEATED_PETALBURG_GYM                                 0x28
+#define FLAG_DEFEATED_FORTREE_GYM                                   0x29
+#define FLAG_DEFEATED_MOSSDEEP_GYM                                  0x2A
+#define FLAG_DEFEATED_SOOTOPOLIS_GYM                                0x2B
+#define FLAG_DEFEATED_METEOR_FALLS_STEVEN                           0x2C
 #define FLAG_UNUSED_0x02D    0x2D // Unused Flag
 #define FLAG_UNUSED_0x02E    0x2E // Unused Flag
 #define FLAG_UNUSED_0x02F    0x2F // Unused Flag
@@ -1217,6 +1217,7 @@
 #define FLAG_ITEM_SAFARI_ZONE_NORTH_EAST_NUGGET                     0x491
 #define FLAG_ITEM_SAFARI_ZONE_SOUTH_EAST_BIG_PEARL                  0x492
 
+/*
 #define FLAG_UNUSED_0x493                                           0x493 // Unused Flag
 #define FLAG_UNUSED_0x494                                           0x494 // Unused Flag
 #define FLAG_UNUSED_0x495                                           0x495 // Unused Flag
@@ -1310,32 +1311,28 @@
 #define FLAG_UNUSED_0x4ED                                           0x4ED // Unused Flag
 #define FLAG_UNUSED_0x4EE                                           0x4EE // Unused Flag
 #define FLAG_UNUSED_0x4EF                                           0x4EF // Unused Flag
-
-#define FLAG_DEFEATED_RUSTBORO_GYM                                  0x4F0
-#define FLAG_DEFEATED_DEWFORD_GYM                                   0x4F1
-#define FLAG_DEFEATED_MAUVILLE_GYM                                  0x4F2
-#define FLAG_DEFEATED_LAVARIDGE_GYM                                 0x4F3
-#define FLAG_DEFEATED_PETALBURG_GYM                                 0x4F4
-#define FLAG_DEFEATED_FORTREE_GYM                                   0x4F5
-#define FLAG_DEFEATED_MOSSDEEP_GYM                                  0x4F6
-#define FLAG_DEFEATED_SOOTOPOLIS_GYM                                0x4F7
-#define FLAG_DEFEATED_METEOR_FALLS_STEVEN                           0x4F8
-
+#define FLAG_UNUSED_0x4F0                                           0x4F0
+#define FLAG_UNUSED_0x4F1                                           0x4F1
+#define FLAG_UNUSED_0x4F2                                           0x4F2
+#define FLAG_UNUSED_0x4F3                                           0x4F3
+#define FLAG_UNUSED_0x4F4                                           0x4F4
+#define FLAG_UNUSED_0x4F5                                           0x4F5
+#define FLAG_UNUSED_0x4F6                                           0x4F6
+#define FLAG_UNUSED_0x4F7                                           0x4F7
+#define FLAG_UNUSED_0x4F8                                           0x4F8
 #define FLAG_UNUSED_0x4F9                                           0x4F9 // Unused Flag
 #define FLAG_UNUSED_0x4FA                                           0x4FA // Unused Flag
-
-#define FLAG_DEFEATED_ELITE_4_SIDNEY                                0x4FB
-#define FLAG_DEFEATED_ELITE_4_PHOEBE                                0x4FC
-#define FLAG_DEFEATED_ELITE_4_GLACIA                                0x4FD
-#define FLAG_DEFEATED_ELITE_4_DRAKE                                 0x4FE
-
+#define FLAG_UNUSED_0x4FB                                           0x4FB
+#define FLAG_UNUSED_0x4FC                                           0x4FC
+#define FLAG_UNUSED_0x4FD                                           0x4FD
+#define FLAG_UNUSED_0x4FE                                           0x4FE
 #define FLAG_UNUSED_0x4FF                                           0x4FF // Unused Flag
-
+*/
 // Trainer Flags
-// Trainer flags occupy 0x500 - 0x85F, the last 9 of which are unused
+// Trainer flags occupy 0x493 - 0x85F, the last 119 of which are unused
 // See constants/opponents.h. The values there + FLAG_TRAINER_FLAG_START are the flag IDs
 
-#define TRAINER_FLAGS_START                                         0x500
+#define TRAINER_FLAGS_START                                         0x493
 #define TRAINER_FLAGS_END                                           (TRAINER_FLAGS_START + MAX_TRAINERS_COUNT - 1) // 0x85F
 
 // System Flags
@@ -1382,7 +1379,7 @@
 #define FLAG_IS_CHAMPION                            (SYSTEM_FLAGS + 0x1F) // Seems to be related to linking.
 #define FLAG_NURSE_UNION_ROOM_REMINDER              (SYSTEM_FLAGS + 0x20)
 
-#define FLAG_UNUSED_0x881                           (SYSTEM_FLAGS + 0x21) // Unused Flag
+#define FLAG_VISITED_CRATERCREST_TOWN               (SYSTEM_FLAGS + 0x21)
 #define FLAG_UNUSED_0x882                           (SYSTEM_FLAGS + 0x22) // Unused Flag
 #define FLAG_UNUSED_0x883                           (SYSTEM_FLAGS + 0x23) // Unused Flag
 #define FLAG_UNUSED_0x884                           (SYSTEM_FLAGS + 0x24) // Unused Flag
@@ -1632,7 +1629,266 @@
 #define FLAG_UNUSED_0x95F                           (DAILY_FLAGS_START + 0x3F) // Unused Flag
 #define DAILY_FLAGS_END                             (FLAG_UNUSED_0x95F + (7 - FLAG_UNUSED_0x95F % 8))
 
-#define FLAGS_COUNT (DAILY_FLAGS_END + 1)
+#define EXTRA_FLAGS_START (DAILY_FLAGS_END + 1)
+
+#define FLAG_UNUSED_0x960                           (EXTRA_FLAGS_START + 0x0)
+#define FLAG_UNUSED_0x961                           (EXTRA_FLAGS_START + 0x1)
+#define FLAG_UNUSED_0x962                           (EXTRA_FLAGS_START + 0x2)
+#define FLAG_UNUSED_0x963                           (EXTRA_FLAGS_START + 0x3)
+#define FLAG_UNUSED_0x964                           (EXTRA_FLAGS_START + 0x4)
+#define FLAG_UNUSED_0x965                           (EXTRA_FLAGS_START + 0x5)
+#define FLAG_UNUSED_0x966                           (EXTRA_FLAGS_START + 0x6)
+#define FLAG_UNUSED_0x967                           (EXTRA_FLAGS_START + 0x7)
+#define FLAG_UNUSED_0x968                           (EXTRA_FLAGS_START + 0x8)
+#define FLAG_UNUSED_0x969                           (EXTRA_FLAGS_START + 0x9)
+#define FLAG_UNUSED_0x96A                           (EXTRA_FLAGS_START + 0xA)
+#define FLAG_UNUSED_0x96B                           (EXTRA_FLAGS_START + 0xB)
+#define FLAG_UNUSED_0x96C                           (EXTRA_FLAGS_START + 0xC)
+#define FLAG_UNUSED_0x96D                           (EXTRA_FLAGS_START + 0xD)
+#define FLAG_UNUSED_0x96E                           (EXTRA_FLAGS_START + 0xE)
+#define FLAG_UNUSED_0x96F                           (EXTRA_FLAGS_START + 0xF)
+#define FLAG_UNUSED_0x970                           (EXTRA_FLAGS_START + 0x10)
+#define FLAG_UNUSED_0x971                           (EXTRA_FLAGS_START + 0x11)
+#define FLAG_UNUSED_0x972                           (EXTRA_FLAGS_START + 0x12)
+#define FLAG_UNUSED_0x973                           (EXTRA_FLAGS_START + 0x13)
+#define FLAG_UNUSED_0x974                           (EXTRA_FLAGS_START + 0x14)
+#define FLAG_UNUSED_0x975                           (EXTRA_FLAGS_START + 0x15)
+#define FLAG_UNUSED_0x976                           (EXTRA_FLAGS_START + 0x16)
+#define FLAG_UNUSED_0x977                           (EXTRA_FLAGS_START + 0x17)
+#define FLAG_UNUSED_0x978                           (EXTRA_FLAGS_START + 0x18)
+#define FLAG_UNUSED_0x979                           (EXTRA_FLAGS_START + 0x19)
+#define FLAG_UNUSED_0x97A                           (EXTRA_FLAGS_START + 0x1A)
+#define FLAG_UNUSED_0x97B                           (EXTRA_FLAGS_START + 0x1B)
+#define FLAG_UNUSED_0x97C                           (EXTRA_FLAGS_START + 0x1C)
+#define FLAG_UNUSED_0x97D                           (EXTRA_FLAGS_START + 0x1D)
+#define FLAG_UNUSED_0x97E                           (EXTRA_FLAGS_START + 0x1E)
+#define FLAG_UNUSED_0x97F                           (EXTRA_FLAGS_START + 0x1F)
+#define FLAG_UNUSED_0x980                           (EXTRA_FLAGS_START + 0x20)
+#define FLAG_UNUSED_0x981                           (EXTRA_FLAGS_START + 0x21)
+#define FLAG_UNUSED_0x982                           (EXTRA_FLAGS_START + 0x22)
+#define FLAG_UNUSED_0x983                           (EXTRA_FLAGS_START + 0x23)
+#define FLAG_UNUSED_0x984                           (EXTRA_FLAGS_START + 0x24)
+#define FLAG_UNUSED_0x985                           (EXTRA_FLAGS_START + 0x25)
+#define FLAG_UNUSED_0x986                           (EXTRA_FLAGS_START + 0x26)
+#define FLAG_UNUSED_0x987                           (EXTRA_FLAGS_START + 0x27)
+#define FLAG_UNUSED_0x988                           (EXTRA_FLAGS_START + 0x28)
+#define FLAG_UNUSED_0x989                           (EXTRA_FLAGS_START + 0x29)
+#define FLAG_UNUSED_0x98A                           (EXTRA_FLAGS_START + 0x2A)
+#define FLAG_UNUSED_0x98B                           (EXTRA_FLAGS_START + 0x2B)
+#define FLAG_UNUSED_0x98C                           (EXTRA_FLAGS_START + 0x2C)
+#define FLAG_UNUSED_0x98D                           (EXTRA_FLAGS_START + 0x2D)
+#define FLAG_UNUSED_0x98E                           (EXTRA_FLAGS_START + 0x2E)
+#define FLAG_UNUSED_0x98F                           (EXTRA_FLAGS_START + 0x2F)
+#define FLAG_UNUSED_0x990                           (EXTRA_FLAGS_START + 0x30)
+#define FLAG_UNUSED_0x991                           (EXTRA_FLAGS_START + 0x31)
+#define FLAG_UNUSED_0x992                           (EXTRA_FLAGS_START + 0x32)
+#define FLAG_UNUSED_0x993                           (EXTRA_FLAGS_START + 0x33)
+#define FLAG_UNUSED_0x994                           (EXTRA_FLAGS_START + 0x34)
+#define FLAG_UNUSED_0x995                           (EXTRA_FLAGS_START + 0x35)
+#define FLAG_UNUSED_0x996                           (EXTRA_FLAGS_START + 0x36)
+#define FLAG_UNUSED_0x997                           (EXTRA_FLAGS_START + 0x37)
+#define FLAG_UNUSED_0x998                           (EXTRA_FLAGS_START + 0x38)
+#define FLAG_UNUSED_0x999                           (EXTRA_FLAGS_START + 0x39)
+#define FLAG_UNUSED_0x99A                           (EXTRA_FLAGS_START + 0x3A)
+#define FLAG_UNUSED_0x99B                           (EXTRA_FLAGS_START + 0x3B)
+#define FLAG_UNUSED_0x99C                           (EXTRA_FLAGS_START + 0x3C)
+#define FLAG_UNUSED_0x99D                           (EXTRA_FLAGS_START + 0x3D)
+#define FLAG_UNUSED_0x99E                           (EXTRA_FLAGS_START + 0x3E)
+#define FLAG_UNUSED_0x99F                           (EXTRA_FLAGS_START + 0x3F)
+#define FLAG_UNUSED_0x9A0                           (EXTRA_FLAGS_START + 0x40)
+#define FLAG_UNUSED_0x9A1                           (EXTRA_FLAGS_START + 0x41)
+#define FLAG_UNUSED_0x9A2                           (EXTRA_FLAGS_START + 0x42)
+#define FLAG_UNUSED_0x9A3                           (EXTRA_FLAGS_START + 0x43)
+#define FLAG_UNUSED_0x9A4                           (EXTRA_FLAGS_START + 0x44)
+#define FLAG_UNUSED_0x9A5                           (EXTRA_FLAGS_START + 0x45)
+#define FLAG_UNUSED_0x9A6                           (EXTRA_FLAGS_START + 0x46)
+#define FLAG_UNUSED_0x9A7                           (EXTRA_FLAGS_START + 0x47)
+#define FLAG_UNUSED_0x9A8                           (EXTRA_FLAGS_START + 0x48)
+#define FLAG_UNUSED_0x9A9                           (EXTRA_FLAGS_START + 0x49)
+#define FLAG_UNUSED_0x9AA                           (EXTRA_FLAGS_START + 0x4A)
+#define FLAG_UNUSED_0x9AB                           (EXTRA_FLAGS_START + 0x4B)
+#define FLAG_UNUSED_0x9AC                           (EXTRA_FLAGS_START + 0x4C)
+#define FLAG_UNUSED_0x9AD                           (EXTRA_FLAGS_START + 0x4D)
+#define FLAG_UNUSED_0x9AE                           (EXTRA_FLAGS_START + 0x4E)
+#define FLAG_UNUSED_0x9AF                           (EXTRA_FLAGS_START + 0x4F)
+#define FLAG_UNUSED_0x9B0                           (EXTRA_FLAGS_START + 0x50)
+#define FLAG_UNUSED_0x9B1                           (EXTRA_FLAGS_START + 0x51)
+#define FLAG_UNUSED_0x9B2                           (EXTRA_FLAGS_START + 0x52)
+#define FLAG_UNUSED_0x9B3                           (EXTRA_FLAGS_START + 0x53)
+#define FLAG_UNUSED_0x9B4                           (EXTRA_FLAGS_START + 0x54)
+#define FLAG_UNUSED_0x9B5                           (EXTRA_FLAGS_START + 0x55)
+#define FLAG_UNUSED_0x9B6                           (EXTRA_FLAGS_START + 0x56)
+#define FLAG_UNUSED_0x9B7                           (EXTRA_FLAGS_START + 0x57)
+#define FLAG_UNUSED_0x9B8                           (EXTRA_FLAGS_START + 0x58)
+#define FLAG_UNUSED_0x9B9                           (EXTRA_FLAGS_START + 0x59)
+#define FLAG_UNUSED_0x9BA                           (EXTRA_FLAGS_START + 0x5A)
+#define FLAG_UNUSED_0x9BB                           (EXTRA_FLAGS_START + 0x5B)
+#define FLAG_UNUSED_0x9BC                           (EXTRA_FLAGS_START + 0x5C)
+#define FLAG_UNUSED_0x9BD                           (EXTRA_FLAGS_START + 0x5D)
+#define FLAG_UNUSED_0x9BE                           (EXTRA_FLAGS_START + 0x5E)
+#define FLAG_UNUSED_0x9BF                           (EXTRA_FLAGS_START + 0x5F)
+#define FLAG_UNUSED_0x9C0                           (EXTRA_FLAGS_START + 0x60)
+#define FLAG_UNUSED_0x9C1                           (EXTRA_FLAGS_START + 0x61)
+#define FLAG_UNUSED_0x9C2                           (EXTRA_FLAGS_START + 0x62)
+#define FLAG_UNUSED_0x9C3                           (EXTRA_FLAGS_START + 0x63)
+#define FLAG_UNUSED_0x9C4                           (EXTRA_FLAGS_START + 0x64)
+#define FLAG_UNUSED_0x9C5                           (EXTRA_FLAGS_START + 0x65)
+#define FLAG_UNUSED_0x9C6                           (EXTRA_FLAGS_START + 0x66)
+#define FLAG_UNUSED_0x9C7                           (EXTRA_FLAGS_START + 0x67)
+#define FLAG_UNUSED_0x9C8                           (EXTRA_FLAGS_START + 0x68)
+#define FLAG_UNUSED_0x9C9                           (EXTRA_FLAGS_START + 0x69)
+#define FLAG_UNUSED_0x9CA                           (EXTRA_FLAGS_START + 0x6A)
+#define FLAG_UNUSED_0x9CB                           (EXTRA_FLAGS_START + 0x6B)
+#define FLAG_UNUSED_0x9CC                           (EXTRA_FLAGS_START + 0x6C)
+#define FLAG_UNUSED_0x9CD                           (EXTRA_FLAGS_START + 0x6D)
+#define FLAG_UNUSED_0x9CE                           (EXTRA_FLAGS_START + 0x6E)
+#define FLAG_UNUSED_0x9CF                           (EXTRA_FLAGS_START + 0x6F)
+#define FLAG_UNUSED_0x9D0                           (EXTRA_FLAGS_START + 0x70)
+#define FLAG_UNUSED_0x9D1                           (EXTRA_FLAGS_START + 0x71)
+#define FLAG_UNUSED_0x9D2                           (EXTRA_FLAGS_START + 0x72)
+#define FLAG_UNUSED_0x9D3                           (EXTRA_FLAGS_START + 0x73)
+#define FLAG_UNUSED_0x9D4                           (EXTRA_FLAGS_START + 0x74)
+#define FLAG_UNUSED_0x9D5                           (EXTRA_FLAGS_START + 0x75)
+#define FLAG_UNUSED_0x9D6                           (EXTRA_FLAGS_START + 0x76)
+#define FLAG_UNUSED_0x9D7                           (EXTRA_FLAGS_START + 0x77)
+#define FLAG_UNUSED_0x9D8                           (EXTRA_FLAGS_START + 0x78)
+#define FLAG_UNUSED_0x9D9                           (EXTRA_FLAGS_START + 0x79)
+#define FLAG_UNUSED_0x9DA                           (EXTRA_FLAGS_START + 0x7A)
+#define FLAG_UNUSED_0x9DB                           (EXTRA_FLAGS_START + 0x7B)
+#define FLAG_UNUSED_0x9DC                           (EXTRA_FLAGS_START + 0x7C)
+#define FLAG_UNUSED_0x9DD                           (EXTRA_FLAGS_START + 0x7D)
+#define FLAG_UNUSED_0x9DE                           (EXTRA_FLAGS_START + 0x7E)
+#define FLAG_UNUSED_0x9DF                           (EXTRA_FLAGS_START + 0x7F)
+#define FLAG_UNUSED_0x9E0                           (EXTRA_FLAGS_START + 0x80)
+#define FLAG_UNUSED_0x9E1                           (EXTRA_FLAGS_START + 0x81)
+#define FLAG_UNUSED_0x9E2                           (EXTRA_FLAGS_START + 0x82)
+#define FLAG_UNUSED_0x9E3                           (EXTRA_FLAGS_START + 0x83)
+#define FLAG_UNUSED_0x9E4                           (EXTRA_FLAGS_START + 0x84)
+#define FLAG_UNUSED_0x9E5                           (EXTRA_FLAGS_START + 0x85)
+#define FLAG_UNUSED_0x9E6                           (EXTRA_FLAGS_START + 0x86)
+#define FLAG_UNUSED_0x9E7                           (EXTRA_FLAGS_START + 0x87)
+#define FLAG_UNUSED_0x9E8                           (EXTRA_FLAGS_START + 0x88)
+#define FLAG_UNUSED_0x9E9                           (EXTRA_FLAGS_START + 0x89)
+#define FLAG_UNUSED_0x9EA                           (EXTRA_FLAGS_START + 0x8A)
+#define FLAG_UNUSED_0x9EB                           (EXTRA_FLAGS_START + 0x8B)
+#define FLAG_UNUSED_0x9EC                           (EXTRA_FLAGS_START + 0x8C)
+#define FLAG_UNUSED_0x9ED                           (EXTRA_FLAGS_START + 0x8D)
+#define FLAG_UNUSED_0x9EE                           (EXTRA_FLAGS_START + 0x8E)
+#define FLAG_UNUSED_0x9EF                           (EXTRA_FLAGS_START + 0x8F)
+#define FLAG_UNUSED_0x9F0                           (EXTRA_FLAGS_START + 0x90)
+#define FLAG_UNUSED_0x9F1                           (EXTRA_FLAGS_START + 0x91)
+#define FLAG_UNUSED_0x9F2                           (EXTRA_FLAGS_START + 0x92)
+#define FLAG_UNUSED_0x9F3                           (EXTRA_FLAGS_START + 0x93)
+#define FLAG_UNUSED_0x9F4                           (EXTRA_FLAGS_START + 0x94)
+#define FLAG_UNUSED_0x9F5                           (EXTRA_FLAGS_START + 0x95)
+#define FLAG_UNUSED_0x9F6                           (EXTRA_FLAGS_START + 0x96)
+#define FLAG_UNUSED_0x9F7                           (EXTRA_FLAGS_START + 0x97)
+#define FLAG_UNUSED_0x9F8                           (EXTRA_FLAGS_START + 0x98)
+#define FLAG_UNUSED_0x9F9                           (EXTRA_FLAGS_START + 0x99)
+#define FLAG_UNUSED_0x9FA                           (EXTRA_FLAGS_START + 0x9A)
+#define FLAG_UNUSED_0x9FB                           (EXTRA_FLAGS_START + 0x9B)
+#define FLAG_UNUSED_0x9FC                           (EXTRA_FLAGS_START + 0x9C)
+#define FLAG_UNUSED_0x9FD                           (EXTRA_FLAGS_START + 0x9D)
+#define FLAG_UNUSED_0x9FE                           (EXTRA_FLAGS_START + 0x9E)
+#define FLAG_UNUSED_0x9FF                           (EXTRA_FLAGS_START + 0x9F)
+#define FLAG_UNUSED_0xA00                           (EXTRA_FLAGS_START + 0xA0)
+#define FLAG_UNUSED_0xA01                           (EXTRA_FLAGS_START + 0xA1)
+#define FLAG_UNUSED_0xA02                           (EXTRA_FLAGS_START + 0xA2)
+#define FLAG_UNUSED_0xA03                           (EXTRA_FLAGS_START + 0xA3)
+#define FLAG_UNUSED_0xA04                           (EXTRA_FLAGS_START + 0xA4)
+#define FLAG_UNUSED_0xA05                           (EXTRA_FLAGS_START + 0xA5)
+#define FLAG_UNUSED_0xA06                           (EXTRA_FLAGS_START + 0xA6)
+#define FLAG_UNUSED_0xA07                           (EXTRA_FLAGS_START + 0xA7)
+#define FLAG_UNUSED_0xA08                           (EXTRA_FLAGS_START + 0xA8)
+#define FLAG_UNUSED_0xA09                           (EXTRA_FLAGS_START + 0xA9)
+#define FLAG_UNUSED_0xA0A                           (EXTRA_FLAGS_START + 0xAA)
+#define FLAG_UNUSED_0xA0B                           (EXTRA_FLAGS_START + 0xAB)
+#define FLAG_UNUSED_0xA0C                           (EXTRA_FLAGS_START + 0xAC)
+#define FLAG_UNUSED_0xA0D                           (EXTRA_FLAGS_START + 0xAD)
+#define FLAG_UNUSED_0xA0E                           (EXTRA_FLAGS_START + 0xAE)
+#define FLAG_UNUSED_0xA0F                           (EXTRA_FLAGS_START + 0xAF)
+#define FLAG_UNUSED_0xA10                           (EXTRA_FLAGS_START + 0xB0)
+#define FLAG_UNUSED_0xA11                           (EXTRA_FLAGS_START + 0xB1)
+#define FLAG_UNUSED_0xA12                           (EXTRA_FLAGS_START + 0xB2)
+#define FLAG_UNUSED_0xA13                           (EXTRA_FLAGS_START + 0xB3)
+#define FLAG_UNUSED_0xA14                           (EXTRA_FLAGS_START + 0xB4)
+#define FLAG_UNUSED_0xA15                           (EXTRA_FLAGS_START + 0xB5)
+#define FLAG_UNUSED_0xA16                           (EXTRA_FLAGS_START + 0xB6)
+#define FLAG_UNUSED_0xA17                           (EXTRA_FLAGS_START + 0xB7)
+#define FLAG_UNUSED_0xA18                           (EXTRA_FLAGS_START + 0xB8)
+#define FLAG_UNUSED_0xA19                           (EXTRA_FLAGS_START + 0xB9)
+#define FLAG_UNUSED_0xA1A                           (EXTRA_FLAGS_START + 0xBA)
+#define FLAG_UNUSED_0xA1B                           (EXTRA_FLAGS_START + 0xBB)
+#define FLAG_UNUSED_0xA1C                           (EXTRA_FLAGS_START + 0xBC)
+#define FLAG_UNUSED_0xA1D                           (EXTRA_FLAGS_START + 0xBD)
+#define FLAG_UNUSED_0xA1E                           (EXTRA_FLAGS_START + 0xBE)
+#define FLAG_UNUSED_0xA1F                           (EXTRA_FLAGS_START + 0xBF)
+#define FLAG_UNUSED_0xA20                           (EXTRA_FLAGS_START + 0xC0)
+#define FLAG_UNUSED_0xA21                           (EXTRA_FLAGS_START + 0xC1)
+#define FLAG_UNUSED_0xA22                           (EXTRA_FLAGS_START + 0xC2)
+#define FLAG_UNUSED_0xA23                           (EXTRA_FLAGS_START + 0xC3)
+#define FLAG_UNUSED_0xA24                           (EXTRA_FLAGS_START + 0xC4)
+#define FLAG_UNUSED_0xA25                           (EXTRA_FLAGS_START + 0xC5)
+#define FLAG_UNUSED_0xA26                           (EXTRA_FLAGS_START + 0xC6)
+#define FLAG_UNUSED_0xA27                           (EXTRA_FLAGS_START + 0xC7)
+#define FLAG_UNUSED_0xA28                           (EXTRA_FLAGS_START + 0xC8)
+#define FLAG_UNUSED_0xA29                           (EXTRA_FLAGS_START + 0xC9)
+#define FLAG_UNUSED_0xA2A                           (EXTRA_FLAGS_START + 0xCA)
+#define FLAG_UNUSED_0xA2B                           (EXTRA_FLAGS_START + 0xCB)
+#define FLAG_UNUSED_0xA2C                           (EXTRA_FLAGS_START + 0xCC)
+#define FLAG_UNUSED_0xA2D                           (EXTRA_FLAGS_START + 0xCD)
+#define FLAG_UNUSED_0xA2E                           (EXTRA_FLAGS_START + 0xCE)
+#define FLAG_UNUSED_0xA2F                           (EXTRA_FLAGS_START + 0xCF)
+#define FLAG_UNUSED_0xA30                           (EXTRA_FLAGS_START + 0xD0)
+#define FLAG_UNUSED_0xA31                           (EXTRA_FLAGS_START + 0xD1)
+#define FLAG_UNUSED_0xA32                           (EXTRA_FLAGS_START + 0xD2)
+#define FLAG_UNUSED_0xA33                           (EXTRA_FLAGS_START + 0xD3)
+#define FLAG_UNUSED_0xA34                           (EXTRA_FLAGS_START + 0xD4)
+#define FLAG_UNUSED_0xA35                           (EXTRA_FLAGS_START + 0xD5)
+#define FLAG_UNUSED_0xA36                           (EXTRA_FLAGS_START + 0xD6)
+#define FLAG_UNUSED_0xA37                           (EXTRA_FLAGS_START + 0xD7)
+#define FLAG_UNUSED_0xA38                           (EXTRA_FLAGS_START + 0xD8)
+#define FLAG_UNUSED_0xA39                           (EXTRA_FLAGS_START + 0xD9)
+#define FLAG_UNUSED_0xA3A                           (EXTRA_FLAGS_START + 0xDA)
+#define FLAG_UNUSED_0xA3B                           (EXTRA_FLAGS_START + 0xDB)
+#define FLAG_UNUSED_0xA3C                           (EXTRA_FLAGS_START + 0xDC)
+#define FLAG_UNUSED_0xA3D                           (EXTRA_FLAGS_START + 0xDD)
+#define FLAG_UNUSED_0xA3E                           (EXTRA_FLAGS_START + 0xDE)
+#define FLAG_UNUSED_0xA3F                           (EXTRA_FLAGS_START + 0xDF)
+#define FLAG_UNUSED_0xA40                           (EXTRA_FLAGS_START + 0xE0)
+#define FLAG_UNUSED_0xA41                           (EXTRA_FLAGS_START + 0xE1)
+#define FLAG_UNUSED_0xA42                           (EXTRA_FLAGS_START + 0xE2)
+#define FLAG_UNUSED_0xA43                           (EXTRA_FLAGS_START + 0xE3)
+#define FLAG_UNUSED_0xA44                           (EXTRA_FLAGS_START + 0xE4)
+#define FLAG_UNUSED_0xA45                           (EXTRA_FLAGS_START + 0xE5)
+#define FLAG_UNUSED_0xA46                           (EXTRA_FLAGS_START + 0xE6)
+#define FLAG_UNUSED_0xA47                           (EXTRA_FLAGS_START + 0xE7)
+#define FLAG_UNUSED_0xA48                           (EXTRA_FLAGS_START + 0xE8)
+#define FLAG_UNUSED_0xA49                           (EXTRA_FLAGS_START + 0xE9)
+#define FLAG_UNUSED_0xA4A                           (EXTRA_FLAGS_START + 0xEA)
+#define FLAG_UNUSED_0xA4B                           (EXTRA_FLAGS_START + 0xEB)
+#define FLAG_UNUSED_0xA4C                           (EXTRA_FLAGS_START + 0xEC)
+#define FLAG_UNUSED_0xA4D                           (EXTRA_FLAGS_START + 0xED)
+#define FLAG_UNUSED_0xA4E                           (EXTRA_FLAGS_START + 0xEE)
+#define FLAG_UNUSED_0xA4F                           (EXTRA_FLAGS_START + 0xEF)
+#define FLAG_UNUSED_0xA50                           (EXTRA_FLAGS_START + 0xF0)
+#define FLAG_UNUSED_0xA51                           (EXTRA_FLAGS_START + 0xF1)
+#define FLAG_UNUSED_0xA52                           (EXTRA_FLAGS_START + 0xF2)
+#define FLAG_UNUSED_0xA53                           (EXTRA_FLAGS_START + 0xF3)
+#define FLAG_UNUSED_0xA54                           (EXTRA_FLAGS_START + 0xF4)
+#define FLAG_UNUSED_0xA55                           (EXTRA_FLAGS_START + 0xF5)
+#define FLAG_UNUSED_0xA56                           (EXTRA_FLAGS_START + 0xF6)
+#define FLAG_UNUSED_0xA57                           (EXTRA_FLAGS_START + 0xF7)
+#define FLAG_UNUSED_0xA58                           (EXTRA_FLAGS_START + 0xF8)
+#define FLAG_UNUSED_0xA59                           (EXTRA_FLAGS_START + 0xF9)
+#define FLAG_UNUSED_0xA5A                           (EXTRA_FLAGS_START + 0xFA)
+#define FLAG_UNUSED_0xA5B                           (EXTRA_FLAGS_START + 0xFB)
+#define FLAG_UNUSED_0xA5C                           (EXTRA_FLAGS_START + 0xFC)
+#define FLAG_UNUSED_0xA5D                           (EXTRA_FLAGS_START + 0xFD)
+#define FLAG_UNUSED_0xA5E                           (EXTRA_FLAGS_START + 0xFE)
+#define FLAG_UNUSED_0xA5F                           (EXTRA_FLAGS_START + 0xFF)
+
+#define FLAGS_COUNT (EXTRA_FLAGS_START + 256)
 
 // Special Flags (Stored in EWRAM (gSpecialFlags), not in the SaveBlock)
 #define SPECIAL_FLAGS_START                     0x4000

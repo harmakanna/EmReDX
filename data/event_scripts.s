@@ -1056,3 +1056,15 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/text/frontier_brain.inc"
 	.include "data/text/save.inc"
 	.include "data/text/birch_speech.inc"
+
+	.include "data/maps/MtMeteor_1F_1R/scripts.inc"
+
+	.include "data/maps/MtMeteor_2F_1R/scripts.inc"
+
+	.include "data/maps/MtMeteor_1F_2R/scripts.inc"
+
+	.include "data/maps/MtMeteor_2F_2R/scripts.inc"
+
+	.include "data/maps/CratercrestTown/scripts.inc"
+
+	.include "data/maps/MeteorPeak/scripts.inc"

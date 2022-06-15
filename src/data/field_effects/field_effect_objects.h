@@ -29,6 +29,8 @@ static const struct SpriteFrameImage sPicTable_ShadowExtraLarge[] = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowSmall = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_8,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_BRENDAN, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_8x8,
@@ -39,6 +41,8 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowSmall = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowMedium = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_8,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_BRENDAN, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_16x8,
@@ -49,6 +53,8 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowMedium = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowLarge = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_8,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_BRENDAN, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_32x8,
@@ -59,6 +65,8 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowLarge = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowExtraLarge = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_8,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_BRENDAN, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_64x32,
@@ -266,6 +274,8 @@ static const union AnimCmd *const sAnimTable_Arrow[] =
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_Arrow = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_8,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_BRENDAN, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_16x16,
@@ -930,6 +940,8 @@ static const union AnimCmd *const sAnimTable_Sparkle[] =
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_Sparkle = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_1,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_NPC_2, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_16x16,
@@ -974,6 +986,8 @@ static const union AnimCmd *const sAnimTable_TreeDisguise[] =
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_TreeDisguise = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_2,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_NPC_3, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_16x32,
@@ -1018,6 +1032,8 @@ static const union AnimCmd *const sAnimTable_MountainDisguise[] =
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_MountainDisguise = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_1,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_NPC_2, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_16x32,
@@ -1038,6 +1054,8 @@ static const struct SpriteFrameImage sPicTable_SandDisguisePlaceholder[] = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_SandDisguisePlaceholder = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_0,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_NPC_1, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_16x32,
@@ -1063,6 +1081,8 @@ static const union AnimCmd *const sAnimTable_Bird[] =
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_Bird = {
+    //.tileTag = 0xFFFF,
+    //.paletteTag = OBJ_EVENT_PAL_TAG_8,
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_BRENDAN, //NEW for Dynamic Overworld Palette System
     .oam = &gObjectEventBaseOam_32x32,
@@ -1149,6 +1169,7 @@ static const union AnimCmd *const sAnimTable_AshPuff[] =
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_AshPuff =
 {
+    //.tileTag = 0xFFFF,
     .tileTag = TAG_NONE,
     .paletteTag = FLDEFF_PAL_TAG_ASH,
     .oam = &gObjectEventBaseOam_16x16,
@@ -1185,6 +1206,7 @@ static const union AnimCmd *const sAnimTable_AshLaunch[] =
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_AshLaunch =
 {
+    //.tileTag = 0xFFFF,
     .tileTag = TAG_NONE,
     .paletteTag = FLDEFF_PAL_TAG_ASH,
     .oam = &gObjectEventBaseOam_16x16,

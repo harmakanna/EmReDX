@@ -10,9 +10,11 @@ static const struct SpriteFrameImage sPicTable_PechaBerryTree[] = {
     overworld_frame(gObjectEventPic_PechaBerryTree, 2, 4, 5),
 };
 
+
 const u16 gBerryTreePaletteTagTable_Pecha[] = {OBJ_EVENT_PAL_TAG_NPC_2, OBJ_EVENT_PAL_TAG_NPC_3, OBJ_EVENT_PAL_TAG_NPC_3, OBJ_EVENT_PAL_TAG_NPC_3, OBJ_EVENT_PAL_TAG_NPC_3};
 
 static const struct SpriteFrameImage sPicTable_KelpsyBerryTree[] = {
+
     overworld_frame(gObjectEventPic_BerryTreeDirtPile, 2, 2, 0),
     overworld_frame(gObjectEventPic_BerryTreeSprout, 2, 2, 0),
     overworld_frame(gObjectEventPic_BerryTreeSprout, 2, 2, 1),

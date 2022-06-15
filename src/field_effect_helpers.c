@@ -19,6 +19,8 @@
 
 static void UpdateObjectReflectionSprite(struct Sprite *);
 static void LoadObjectReflectionPalette(struct ObjectEvent *objectEvent, struct Sprite *sprite);
+//static void LoadObjectHighBridgeReflectionPalette(struct ObjectEvent *, u8);
+//static void LoadObjectRegularReflectionPalette(struct ObjectEvent *, u8);
 static void UpdateGrassFieldEffectSubpriority(struct Sprite *, u8, u8);
 static void FadeFootprintsTireTracks_Step0(struct Sprite *);
 static void FadeFootprintsTireTracks_Step1(struct Sprite *);
@@ -36,6 +38,7 @@ static void LoadFieldEffectPalette_(u8 fieldEffect, bool8 updateGammaType);
 void LoadSpecialReflectionPalette(struct Sprite *sprite);
 
 extern u16 gReflectionPaletteBuffer[];
+//static u32 ShowDisguiseFieldEffect(u8, u8, u8);
 
 // Used by several field effects to determine which of a group it is
 #define sFldEff    data[1]
@@ -52,6 +55,7 @@ void SetUpReflection(struct ObjectEvent *objectEvent, struct Sprite *sprite, boo
     reflectionSprite = &gSprites[CreateCopySpriteAt(sprite, sprite->x, sprite->y, 0x98)];
     reflectionSprite->callback = UpdateObjectReflectionSprite;
     reflectionSprite->oam.priority = 3;
+    //reflectionSprite->oam.paletteNum = gReflectionEffectPaletteMap[reflectionSprite->oam.paletteNum];
     reflectionSprite->usingSheet = TRUE;
     reflectionSprite->anims = gDummySpriteAnimTable;
     StartSpriteAnim(reflectionSprite, 0);
@@ -71,6 +75,7 @@ static s16 GetReflectionVerticalOffset(struct ObjectEvent *objectEvent)
 {
     return GetObjectEventGraphicsInfo(objectEvent->graphicsId)->height - 2;
 }
+#define OBJ_EVENT_PAL_TAG_10 0x1102
 
 #define OBJ_EVENT_PAL_TAG_BRIDGE_REFLECTION 0x1102
 
@@ -142,6 +147,7 @@ static void UpdateObjectReflectionSprite(struct Sprite *reflectionSprite)
     }
     else
     {
+        //reflectionSprite->oam.paletteNum = gReflectionEffectPaletteMap[mainSprite->oam.paletteNum];
         reflectionSprite->oam.shape = mainSprite->oam.shape;
         reflectionSprite->oam.size = mainSprite->oam.size;
         reflectionSprite->oam.matrixNum = mainSprite->oam.matrixNum | ST_OAM_VFLIP;
@@ -1024,6 +1030,7 @@ u32 FldEff_SurfBlob(void)
     {
         sprite = &gSprites[spriteId];
         sprite->coordOffsetEnabled = TRUE;
+        //sprite->oam.paletteNum = 0;
         sprite->tPlayerObjId = gFieldEffectArguments[2];
         sprite->data[3] = -1;
         sprite->data[6] = -1;
@@ -1079,7 +1086,7 @@ void UpdateSurfBlobFieldEffect(struct Sprite *sprite)
     sprite->oam.priority = playerSprite->oam.priority;
 }
 
-static void SynchroniseSurfAnim(struct ObjectEvent *playerObj, struct Sprite *sprite)
+void SynchroniseSurfAnim(struct ObjectEvent *playerObj, struct Sprite *sprite)
 {
     // Indexes into sAnimTable_SurfBlob
     u8 surfBlobDirectionAnims[] = {
@@ -1307,6 +1314,7 @@ u32 FldEff_BerryTreeGrowthSparkle(void)
         sprite = &gSprites[spriteId];
         sprite->coordOffsetEnabled = TRUE;
         sprite->oam.priority = gFieldEffectArguments[3];
+        //sprite->oam.paletteNum = 5;
         sprite->data[0] = FLDEFF_BERRY_TREE_GROWTH_SPARKLE;
     }
     return 0;
@@ -1350,6 +1358,7 @@ static u32 ShowDisguiseFieldEffect(u8 fldEff, u8 templateIdx)
     {
         sprite = &gSprites[spriteId];
         sprite->coordOffsetEnabled ++;
+        //sprite->oam.paletteNum = paletteNum;
         sprite->sFldEff = fldEff;
         sprite->sLocalId = gFieldEffectArguments[0];
         sprite->sMapNum = gFieldEffectArguments[1];

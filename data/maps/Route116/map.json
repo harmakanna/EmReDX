@@ -209,8 +209,8 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 80,
-      "y": 8,
+      "x": 73,
+      "y": 5,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 0,
@@ -388,6 +388,19 @@
       "trainer_sight_or_berry_tree_id": "5",
       "script": "Route116_EventScript_Devan",
       "flag": "0"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_F",
+      "x": 76,
+      "y": 7,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "NULL",
+      "flag": "0"
     }
   ],
   "warp_events": [
@@ -421,9 +434,16 @@
     },
     {
       "x": 79,
-      "y": 6,
+      "y": 11,
       "elevation": 0,
       "dest_map": "MAP_TERRA_CAVE_ENTRANCE",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 79,
+      "y": 6,
+      "elevation": 0,
+      "dest_map": "MAP_MT_METEOR_1F_1R",
       "dest_warp_id": 0
     }
   ],
@@ -469,13 +489,6 @@
       "y": 4,
       "elevation": 0,
       "secret_base_id": "SECRET_BASE_BLUE_CAVE1_1"
-    },
-    {
-      "type": "secret_base",
-      "x": 79,
-      "y": 11,
-      "elevation": 0,
-      "secret_base_id": "SECRET_BASE_BLUE_CAVE2_1"
     },
     {
       "type": "sign",

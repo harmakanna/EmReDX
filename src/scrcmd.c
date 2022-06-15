@@ -1180,7 +1180,7 @@ bool8 ScrCmd_setobjectmovementtype(struct ScriptContext *ctx)
 
 bool8 ScrCmd_createvobject(struct ScriptContext *ctx)
 {
-    u8 graphicsId = ScriptReadByte(ctx);
+    u16 graphicsId = ScriptReadByte(ctx);
     u8 virtualObjId = ScriptReadByte(ctx);
     u16 x = VarGet(ScriptReadHalfword(ctx));
     u32 y = VarGet(ScriptReadHalfword(ctx));
@@ -1885,7 +1885,7 @@ bool8 ScrCmd_setwildbattle(struct ScriptContext *ctx)
         gIsScriptedWildDouble = FALSE;
     }
     else
-    { 
+    {
         CreateScriptedDoubleWildMon(species, level, item, species2, level2, item2);
         gIsScriptedWildDouble = TRUE;
     }
